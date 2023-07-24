@@ -1,3 +1,6 @@
+pub mod application;
+pub mod models;
+
 use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
 use near_sdk::near_bindgen;
 use near_sdk::serde::{Deserialize, Serialize};

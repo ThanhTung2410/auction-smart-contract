@@ -60,7 +60,7 @@ impl ImplItem for AuctionContract {
         start: Option<u32>,
         limit: Option<u32>,
     ) -> Vec<ItemMetadata> {
-        let items = self.items_per_user.get(&env::signer_account_id()).unwrap();
+        let items = self.items_per_user.get(&user_id).unwrap();
         let mut vec_items = Vec::new();
         for item_id in items.iter() {
             let item_metadata = self.get_item_metadata_by_item_id(item_id).unwrap();

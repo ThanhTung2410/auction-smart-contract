@@ -8,26 +8,35 @@ pub type ItemId = u128;
 #[derive(BorshDeserialize, BorshSerialize, Deserialize, Serialize, Debug)]
 #[serde(crate = "near_sdk::serde")]
 pub struct ItemMetadata {
-    item_id: ItemId,
+    pub item_id: ItemId,
 
-    name: String,
+    pub name: String,
 
-    description: String,
+    pub description: String,
 
-    media: String,
+    pub media: String,
 
-    owner_id: UserId,
+    pub owner_id: UserId,
 
     /// timestamp
-    created_at: u128,
+    pub created_at: u64,
 
-    updated_at: u128,
+    pub updated_at: u64,
 
-    is_auction: bool,
+    pub is_auction: bool,
 }
 
 pub trait ImplItem {
-    fn create_item(&mut self) -> ItemMetadata;
+    fn create_item(
+        &mut self,
+        item_id: ItemId,
+
+        name: String,
+
+        description: String,
+
+        media: String,
+    ) -> ItemMetadata;
 
     fn get_item_metadata_by_item_id(&self, item_id: ItemId) -> Option<ItemMetadata>;
 

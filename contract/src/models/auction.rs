@@ -1,19 +1,22 @@
-use std::time::SystemTime;
-
+use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
+use near_sdk::serde::{Deserialize, Serialize};
 use near_sdk::{Balance, __private::schemars::Set};
 
 use super::{item::ItemId, user::UserId};
 
 pub type AuctionId = u128;
 
+#[derive(BorshDeserialize, BorshSerialize, Deserialize, Serialize, Debug)]
+#[serde(crate = "near_sdk::serde")]
 pub struct AuctionMetadata {
     auction_id: AuctionId,
 
     host_id: UserId,
 
-    created_at: SystemTime,
+    /// timestamp
+    created_at: u128,
 
-    closed_at: SystemTime,
+    closed_at: u128,
 
     // A floor price is the minimum net bid price that a seller is willing to accept for a bid in an auction
     floor_price: Balance,

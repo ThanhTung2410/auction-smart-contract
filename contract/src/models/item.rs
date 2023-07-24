@@ -1,9 +1,12 @@
-use std::time::SystemTime;
+use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
+use near_sdk::serde::{Deserialize, Serialize};
 
 use super::user::UserId;
 
 pub type ItemId = u128;
 
+#[derive(BorshDeserialize, BorshSerialize, Deserialize, Serialize, Debug)]
+#[serde(crate = "near_sdk::serde")]
 pub struct ItemMetadata {
     item_id: ItemId,
 
@@ -15,9 +18,10 @@ pub struct ItemMetadata {
 
     owner_id: UserId,
 
-    created_at: SystemTime,
+    /// timestamp
+    created_at: u128,
 
-    updated_at: SystemTime,
+    updated_at: u128,
 
     is_auction: bool,
 }

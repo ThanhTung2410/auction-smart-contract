@@ -1,39 +1,68 @@
 pub mod application;
 pub mod models;
 
-use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
-use near_sdk::near_bindgen;
-use near_sdk::serde::{Deserialize, Serialize};
+use crate::models::contract::AuctionContractExt;
+use models::contract::{AuctionContract, AuctionContractMetadata, ContractStorageKey};
+use models::user::UserId;
+use near_sdk::borsh::{self, BorshSerialize};
+use near_sdk::collections::{LazyOption, LookupMap, UnorderedSet};
+use near_sdk::{env, near_bindgen};
 
-// Define the contract structure
 #[near_bindgen]
-#[derive(BorshDeserialize, BorshSerialize, Serialize, Deserialize)]
-#[serde(crate = "near_sdk::serde")]
-pub struct Contract {
-  count: u32,
-}
+impl AuctionContract {
+    #[init]
+    pub fn init() -> Self {
+        let owner_id = env::signer_account_id();
+        Self::new(
+            owner_id,
+            AuctionContractMetadata {
+                spec: "auction-1.0.0".to_string(),
+                name: "auction".to_string(),
+                symbol: "Auction".to_string(),
+                icon: None,
+                base_uri: None,
+                reference: None,
+                reference_hash: None,
+            },
+        )
+    }
 
-// Define the default, which automatically initializes the contract
-impl Default for Contract {
-  fn default() -> Self {
-    Self { count: 0 }
-  }
-}
-
-// Implement the contract structure
-#[near_bindgen]
-impl Contract {
-  // Public method - Get the current count
-  pub fn get_number(&self) -> u32 {
-    self.count
-  }
-
-  // Private method - Call this method to increment the count by a given number
-  pub fn plus(&mut self, number: u32) {
-    self.count += number;
-  }
-
-  fn plus_one(&mut self) {
-    self.count += 1;
-  }
+    #[init]
+    pub fn new(owner_id: UserId, metadata: AuctionContractMetadata) -> Self {
+        Self {
+            owner_id,
+            metadata_contract: LazyOption::new(
+                ContractStorageKey::ContractMetadata.try_to_vec().unwrap(),
+                Some(&metadata),
+            ),
+            participant_users: UnorderedSet::new(
+                ContractStorageKey::ParticipantUsers.try_to_vec().unwrap(),
+            ),
+            auctioneer_users: UnorderedSet::new(
+                ContractStorageKey::AuctioneerUsers.try_to_vec().unwrap(),
+            ),
+            auctions_host_per_user: LookupMap::new(
+                ContractStorageKey::AuctionsHostPerUser
+                    .try_to_vec()
+                    .unwrap(),
+            ),
+            auctions_join_per_user: LookupMap::new(
+                ContractStorageKey::AuctionsJoinPerUser
+                    .try_to_vec()
+                    .unwrap(),
+            ),
+            items_per_user: LookupMap::new(ContractStorageKey::ItemsPerUser.try_to_vec().unwrap()),
+            item_metadata_by_id: LookupMap::new(
+                ContractStorageKey::ItemMetadataById.try_to_vec().unwrap(),
+            ),
+            auction_metadata_by_id: LookupMap::new(
+                ContractStorageKey::AuctionMetadataById
+                    .try_to_vec()
+                    .unwrap(),
+            ),
+            user_metadata_by_id: LookupMap::new(
+                ContractStorageKey::UserMetadataById.try_to_vec().unwrap(),
+            ),
+        }
+    }
 }

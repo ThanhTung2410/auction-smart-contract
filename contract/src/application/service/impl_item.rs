@@ -1,6 +1,7 @@
 use crate::models::contract::AuctionContractExt;
 use crate::models::item::{ItemId, ItemMetadata};
 
+use crate::models::user::UserId;
 use crate::models::{contract::AuctionContract, item::ImplItem};
 use near_sdk::collections::UnorderedSet;
 use near_sdk::{env, near_bindgen};
@@ -55,11 +56,17 @@ impl ImplItem for AuctionContract {
 
     fn get_all_items_per_user_own(
         &self,
-        user_id: crate::models::user::UserId,
+        user_id: UserId,
         start: Option<u32>,
         limit: Option<u32>,
-    ) -> Vec<crate::models::item::ItemMetadata> {
-        todo!()
+    ) -> Vec<ItemMetadata> {
+        let items = self.items_per_user.get(&env::signer_account_id()).unwrap();
+        let mut vec_items = Vec::new();
+        for item_id in items.iter() {
+            let item_metadata = self.get_item_metadata_by_item_id(item_id).unwrap();
+            vec_items.push(item_metadata);
+        }
+        vec_items
     }
 
     fn update_item(&mut self) {

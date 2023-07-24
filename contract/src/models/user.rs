@@ -1,6 +1,6 @@
 use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
 use near_sdk::serde::{Deserialize, Serialize};
-use near_sdk::AccountId;
+use near_sdk::{AccountId, Balance};
 
 use super::auction::AuctionId;
 use super::item::ItemId;
@@ -22,17 +22,19 @@ pub enum Roles {
 #[derive(BorshDeserialize, BorshSerialize, Deserialize, Serialize, Debug)]
 #[serde(crate = "near_sdk::serde")]
 pub struct UserMetadata {
-    user_id: UserId,
+    pub user_id: UserId,
 
-    name: String,
+    pub name: String,
 
-    avatar: Option<String>,
+    pub avatar: Option<String>,
 
-    email: String,
+    pub email: String,
 
-    phone: String,
+    pub phone: String,
 
-    description: String,
+    pub description: String,
+
+    pub role: Roles,
 }
 
 #[derive(BorshDeserialize, BorshSerialize, Deserialize, Serialize)]
@@ -54,14 +56,26 @@ pub struct JsonUser {
     // pub auctions: HashMap<AuctionId, AuctionMetadata>,
     pub auctions_host: Vec<AuctionId>,
 
-    pub auctions_join: Vec<AuctionId>,
+    pub auctions_join: Vec<(AuctionId, Balance)>, // bid in that auction
 }
 
 /// The `ImplUser` trait defines a set of behaviors associated with a user in the system.
 pub trait ImplUser {
     /// Creates a new user with the provided ...
     /// The fields ... are optional.
-    fn create_user(&mut self);
+    fn create_user(
+        &mut self,
+
+        name: String,
+
+        avatar: Option<String>,
+
+        email: String,
+
+        phone: String,
+
+        description: String,
+    );
 
     /// Updates the role of a user and returns the updated user as a `JsonUser`.
     fn update_role(&mut self) -> JsonUser;

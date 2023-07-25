@@ -49,3 +49,21 @@ cargo make call get_item_metadata_by_item_id '{"item_id": 1}' --account-id thanh
 ```
 cargo make call get_all_items_per_user_own '{"user_id": "thanhtung2410.testnet"}' --account-id thanhtung2410.testnet
 ```
+
+## create_auction
+
+```
+cargo make call create_auction '{"item_id": 1, "auction_id": 1, "closed_at": 1690705562}' --account-id thanhtung2410.testnet
+```
+
+## get_auction_metadata_by_auction_id
+
+```
+cargo make view get_auction_metadata_by_auction_id '{"auction_id" : 1}'
+```
+
+## delete_auction
+
+```
+cargo make call delete_auction '{"auction_id": 1}' --account-id thanhtung2410.testnet
+```

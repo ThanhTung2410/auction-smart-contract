@@ -53,7 +53,7 @@ cargo make call get_all_items_per_user_own '{"user_id": "thanhtung2410.testnet"}
 ## create_auction
 
 ```
-cargo make call create_auction '{"item_id": 1, "auction_id": 1, "closed_at": 1690705562}' --account-id thanhtung2410.testnet
+cargo make call create_auction '{"item_id": 1, "auction_id": 1, "closed_at": 1690731834000}' --account-id thanhtung2410.testnet
 ```
 
 ## get_auction_metadata_by_auction_id

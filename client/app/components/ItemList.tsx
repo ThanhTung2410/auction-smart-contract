@@ -163,7 +163,7 @@ interface ItemListProps {
 export default function ItemList(props: ItemListProps) {
   const { items } = props;
   return (
-    <div className="row">
+    <div className="row" style={{ paddingBottom: "40px" }}>
       <Wrapper>
         <Container>
           <H1>

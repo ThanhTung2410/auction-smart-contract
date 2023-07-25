@@ -3,19 +3,19 @@
 import styled from "styled-components";
 
 const Wrapper = styled.div`
-  background: #f2f1ea;
-  padding: 192px 24px;
+  background: #f8f3ee;
+  padding: 25px 24px;
 
   @media (max-width: 1000px) {
-    padding: 112px 24px;
+    padding: 50px 24px;
   }
 `;
 
 const Text = styled.p`
   font-family: "FK Grotesk", sans-serif;
-  font-size: ${(p) => p.size ?? "18px"};
-  line-height: ${(p) => p.lineHeight ?? "1.5"};
-  font-weight: ${(p) => p.weight ?? "400"};
+  font-size: 16px;
+  line-height: "1.5";
+  font-weight: 500;
   color: ${(p) => p.color ?? "#000"};
   margin: 0;
 `;
@@ -253,9 +253,7 @@ const Footer = () => {
 
         <LinkGrid>
           <div>
-            <Text size="16px" weight="500">
-              Learn
-            </Text>
+            <Text>Learn</Text>
             <ul>
               <li>
                 <a href="/learn">The basics</a>
@@ -272,9 +270,7 @@ const Footer = () => {
           </div>
 
           <div>
-            <Text size="16px" weight="500">
-              Use
-            </Text>
+            <Text>Use</Text>
             <ul>
               <li>
                 <a href="/use#set-up-account">Account Setup</a>
@@ -294,9 +290,7 @@ const Footer = () => {
           </div>
 
           <div>
-            <Text size="16px" weight="500">
-              Ecosystem
-            </Text>
+            <Text>Ecosystem</Text>
             <ul>
               <li>
                 <a href="/ecosystem">Overview</a>
@@ -323,9 +317,7 @@ const Footer = () => {
           </div>
 
           <div>
-            <Text size="16px" weight="500">
-              Developers
-            </Text>
+            <Text>Developers</Text>
             <ul>
               <li>
                 <a href="https://pages.near.org/developers/">Overview</a>
@@ -351,9 +343,7 @@ const Footer = () => {
           </div>
 
           <div>
-            <Text size="16px" weight="500">
-              About
-            </Text>
+            <Text>About</Text>
             <ul>
               <li>
                 <a href="/about">Overview</a>
@@ -384,9 +374,7 @@ const Footer = () => {
           </div>
 
           <div>
-            <Text size="16px" weight="500">
-              User Tools
-            </Text>
+            <Text>User Tools</Text>
             <ul>
               <li>
                 <a href="https://wallet.near.org/">Near Wallet</a>
@@ -404,9 +392,7 @@ const Footer = () => {
               </li>
             </ul>
 
-            <Text size="16px" weight="500">
-              Dev Tools
-            </Text>
+            <Text>Dev Tools</Text>
             <ul>
               <li>
                 <a href="https://docs.near.org/tools/near-cli">Near CLI</a>

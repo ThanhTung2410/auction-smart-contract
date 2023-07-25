@@ -1,3 +1,5 @@
+"use client";
+
 const styles = {
   formrow: {
     marginBottom: "32px",
@@ -96,27 +98,26 @@ const styles = {
 };
 
 const Form = () => {
+  const handleClick = (event: MouseEvent<HTMLInputElement, MouseEvent>) => {
+    console.log(event);
+  };
+
   return (
     <>
       <div style={styles.formwrap}>
-        <div style={styles.pagename}>Feature Request</div>
+        <div style={styles.pagename}>Add item</div>
 
         <div style={styles.contentdiv}>
-          <div style={styles.formrow}>
-            <label style={styles.label}>Feature category*</label>
-            <input style={styles.textbox} name="myInput" />
-          </div>
-          <div style={styles.formrow}>
-            <label style={styles.label}>e-mail*</label>
-            <input style={styles.textbox} name="myInput" />
-          </div>
           <div style={styles.formrow}>
             <label style={styles.label}>Name</label>
             <input style={styles.textbox} name="myInput" />
           </div>
-
           <div style={styles.formrow}>
-            <label style={styles.label}>Feature description*</label>
+            <label style={styles.label}>Media</label>
+            <input style={styles.textbox} name="myInput" />
+          </div>
+          <div style={styles.formrow}>
+            <label style={styles.label}>Description</label>
             <textarea
               style={styles.textarea}
               name="w3review"
@@ -126,7 +127,14 @@ const Form = () => {
           </div>
 
           <div style={styles.btnrow}>
-            <input style={styles.btn} type="submit" value="Submit" />
+            <input
+              onClick={(event) => {
+                handleClick(event);
+              }}
+              style={styles.btn}
+              type="submit"
+              value="Submit"
+            />
           </div>
         </div>
       </div>
@@ -134,4 +142,4 @@ const Form = () => {
   );
 };
 
-export default Form
+export default Form;

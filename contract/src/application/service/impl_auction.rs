@@ -5,7 +5,7 @@ use crate::models::user::UserId;
 use crate::models::{auction::ImplAuction, contract::AuctionContract};
 use near_sdk::__private::schemars::Set;
 use near_sdk::collections::UnorderedSet;
-use near_sdk::{env, near_bindgen, Balance};
+use near_sdk::{env, near_bindgen, Balance, Promise};
 
 #[near_bindgen]
 /// Implement function for auction
@@ -76,7 +76,41 @@ impl ImplAuction for AuctionContract {
         self.auction_metadata_by_id.remove(&auction_id);
     }
 
+    #[payable]
     fn join_auction(&mut self, auction_id: AuctionId) {
-        todo!()
+        let mut auction = self.get_auction_metadata_by_auction_id(auction_id).unwrap();
+        let highest_bid = auction.highest_bid.or_else(|| Some(0)).unwrap();
+
+        let bid = env::attached_deposit() / 10u128.pow(24);
+
+        // check condition
+        assert!(
+            bid > highest_bid,
+            "You need to pay more than the highest bid"
+        );
+        assert!(
+            env::block_timestamp_ms() < auction.closed_at,
+            "The auction is closed"
+        );
+
+        auction.winner = Some(env::signer_account_id());
+        auction.highest_bid = Some(bid);
+        auction.users_join_auction.insert(env::signer_account_id());
+        self.auction_metadata_by_id.insert(&auction_id, &auction);
+
+        let mut set_auction_user_join = self
+            .auctions_join_per_user
+            .get(&env::signer_account_id())
+            .or_else(|| {
+                Some(UnorderedSet::new(
+                    env::signer_account_id().clone().to_string().into_bytes(),
+                ))
+            })
+            .unwrap();
+        set_auction_user_join.insert(&auction_id);
+        self.auctions_join_per_user
+            .insert(&env::signer_account_id(), &set_auction_user_join);
+
+        Promise::new(auction.host_id).transfer(env::attached_deposit());
     }
 }

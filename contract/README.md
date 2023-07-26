@@ -67,3 +67,9 @@ cargo make view get_auction_metadata_by_auction_id '{"auction_id" : 1}'
 ```
 cargo make call delete_auction '{"auction_id": 1}' --account-id thanhtung2410.testnet
 ```
+
+## join_auction
+
+```
+cargo make call join_auction '{"auction_id": 1}' --account-id test_auction_contract.testnet --amount 1
+```

@@ -1,5 +1,16 @@
 "use client";
 
+import { Item } from "@/app/@types/Item.type";
+import { useAppSelector } from "@/context/store";
+import {
+  selectAccountId,
+  selectIsLoading,
+  selectWallet,
+} from "@/features/walletSlice";
+import { useEffect, useState } from "react";
+
+const CONTRACT_ID = process.env.NEXT_PUBLIC_CONTRACT_NAME || "";
+
 const styles = {
   formrow: {
     marginBottom: "32px",
@@ -98,8 +109,86 @@ const styles = {
 };
 
 const Form = () => {
-  const handleClick = (event: MouseEvent<HTMLInputElement, MouseEvent>) => {
-    console.log(event);
+  const wallet = useAppSelector(selectWallet);
+  const account = useAppSelector(selectAccountId);
+  const [walletReady, setWalletReady] = useState(false);
+  const [name, setName] = useState<string>("");
+  const [media, setMedia] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
+  // const [item, setItem] = useState<Item | null>(null);
+  const isLoading = useAppSelector(selectIsLoading);
+
+  useEffect(() => {
+    if (!isLoading && wallet) {
+      setWalletReady(true);
+    }
+  }, [isLoading, wallet]);
+
+  // useEffect(() => {
+  //   const createItem = async () => {
+  //     if (wallet) {
+  //       const result = await wallet.callMethod({
+  //         contractId: CONTRACT_ID,
+  //         method: "create_item",
+  //         args: {
+  //           name,
+  //           media,
+  //           description
+  //         },
+  //       });
+  //     }
+  //   };
+  //   createItem();
+  // }, [walletReady]);
+
+  const changeMessage = async (e: any) => {
+    if (!wallet) {
+      console.error("Wallet is not initialized");
+      return;
+    }
+    setWalletReady(false);
+    e.preventDefault();
+    let { numberInput } = e.target.elements;
+    let parsedValue = parseInt(numberInput.value);
+
+    await wallet
+      .callMethod({
+        contractId: CONTRACT_ID,
+        method: "plus",
+        args: { number: parsedValue },
+        gas: "300000000000000",
+      })
+      .then(() => setWalletReady(true))
+      .then(() => window.location.reload());
+  };
+
+  const handleChange = (setState: any) => (event: any) => {
+    setState(event.target.value);
+  };
+
+  const handleClick = (event: any) => {
+    event.preventDefault();
+    const createItem = async () => {
+      if (wallet) {
+        const result = await wallet.callMethod({
+          contractId: CONTRACT_ID,
+          method: "create_item",
+          args: {
+            item_id: 6, // just test
+            name,
+            media,
+            description,
+          },
+        });
+      }
+    };
+    createItem()
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   return (
@@ -107,14 +196,24 @@ const Form = () => {
       <div style={styles.formwrap}>
         <div style={styles.pagename}>Add item</div>
 
-        <div style={styles.contentdiv}>
+        <form style={styles.contentdiv}>
           <div style={styles.formrow}>
             <label style={styles.label}>Name</label>
-            <input style={styles.textbox} name="myInput" />
+            <input
+              style={styles.textbox}
+              name="myInput"
+              value={name}
+              onChange={handleChange(setName)}
+            />
           </div>
           <div style={styles.formrow}>
             <label style={styles.label}>Media</label>
-            <input style={styles.textbox} name="myInput" />
+            <input
+              style={styles.textbox}
+              name="myInput"
+              value={media}
+              onChange={handleChange(setMedia)}
+            />
           </div>
           <div style={styles.formrow}>
             <label style={styles.label}>Description</label>
@@ -123,7 +222,9 @@ const Form = () => {
               name="w3review"
               rows="4"
               cols="50"
-            ></textarea>
+              value={description}
+              onChange={handleChange(setDescription)}
+            />
           </div>
 
           <div style={styles.btnrow}>
@@ -136,7 +237,7 @@ const Form = () => {
               value="Submit"
             />
           </div>
-        </div>
+        </form>
       </div>
     </>
   );

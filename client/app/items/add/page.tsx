@@ -115,7 +115,6 @@ const Form = () => {
   const [name, setName] = useState<string>("");
   const [media, setMedia] = useState<string>("");
   const [description, setDescription] = useState<string>("");
-  // const [item, setItem] = useState<Item | null>(null);
   const isLoading = useAppSelector(selectIsLoading);
 
   useEffect(() => {
@@ -124,23 +123,6 @@ const Form = () => {
     }
   }, [isLoading, wallet]);
 
-  // useEffect(() => {
-  //   const createItem = async () => {
-  //     if (wallet) {
-  //       const result = await wallet.callMethod({
-  //         contractId: CONTRACT_ID,
-  //         method: "create_item",
-  //         args: {
-  //           name,
-  //           media,
-  //           description
-  //         },
-  //       });
-  //     }
-  //   };
-  //   createItem();
-  // }, [walletReady]);
-
   const changeMessage = async (e: any) => {
     if (!wallet) {
       console.error("Wallet is not initialized");
@@ -148,47 +130,20 @@ const Form = () => {
     }
     setWalletReady(false);
     e.preventDefault();
-    let { numberInput } = e.target.elements;
-    let parsedValue = parseInt(numberInput.value);
 
     await wallet
       .callMethod({
         contractId: CONTRACT_ID,
-        method: "plus",
-        args: { number: parsedValue },
+        method: "create_item",
+        args: { item_id: 6, name, media, description }, // id hard code just for text
         gas: "300000000000000",
       })
       .then(() => setWalletReady(true))
-      .then(() => window.location.reload());
+      .then(() => (window.location.href = "/app/page.tsx"));
   };
 
   const handleChange = (setState: any) => (event: any) => {
     setState(event.target.value);
-  };
-
-  const handleClick = (event: any) => {
-    event.preventDefault();
-    const createItem = async () => {
-      if (wallet) {
-        const result = await wallet.callMethod({
-          contractId: CONTRACT_ID,
-          method: "create_item",
-          args: {
-            item_id: 6, // just test
-            name,
-            media,
-            description,
-          },
-        });
-      }
-    };
-    createItem()
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
   };
 
   return (
@@ -196,7 +151,7 @@ const Form = () => {
       <div style={styles.formwrap}>
         <div style={styles.pagename}>Add item</div>
 
-        <form style={styles.contentdiv}>
+        <form style={styles.contentdiv} onSubmit={changeMessage}>
           <div style={styles.formrow}>
             <label>Name</label>
             <input
@@ -218,20 +173,26 @@ const Form = () => {
           <div style={styles.formrow}>
             <label>Description</label>
             <textarea
+              style={{
+                backgroundColor: "rgba(0, 0, 0, 0.2)",
+                border: "1px solid rgba(255, 255, 255, 0.1)",
+                minHeight: "100px",
+                color: "#fff",
+                fontSize: "14px",
+                borderRadius: "6px",
+                width: "100%",
+                padding: "4px 11px",
+                resize: "none",
+              }}
+              rows={4}
+              cols={50}
               value={description}
               onChange={handleChange(setDescription)}
             />
           </div>
 
           <div style={styles.btnrow}>
-            <input
-              onClick={(event) => {
-                handleClick(event);
-              }}
-              style={styles.btn}
-              type="submit"
-              value="Submit"
-            />
+            <input style={styles.btn} type="submit" value="Submit" />
           </div>
         </form>
       </div>

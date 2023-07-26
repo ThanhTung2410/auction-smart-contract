@@ -198,7 +198,7 @@ const Form = () => {
 
         <form style={styles.contentdiv}>
           <div style={styles.formrow}>
-            <label style={styles.label}>Name</label>
+            <label>Name</label>
             <input
               style={styles.textbox}
               name="myInput"
@@ -207,7 +207,7 @@ const Form = () => {
             />
           </div>
           <div style={styles.formrow}>
-            <label style={styles.label}>Media</label>
+            <label>Media</label>
             <input
               style={styles.textbox}
               name="myInput"
@@ -216,12 +216,8 @@ const Form = () => {
             />
           </div>
           <div style={styles.formrow}>
-            <label style={styles.label}>Description</label>
+            <label>Description</label>
             <textarea
-              style={styles.textarea}
-              name="w3review"
-              rows="4"
-              cols="50"
               value={description}
               onChange={handleChange(setDescription)}
             />

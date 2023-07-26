@@ -2,6 +2,8 @@
 
 import styled from "styled-components";
 import { Item } from "../@types/Item.type";
+import { Dispatch, SetStateAction, useState } from "react";
+import Modal from "./Modal";
 
 const Wrapper = styled.div`
   --section-gap: 42px;
@@ -158,10 +160,29 @@ const ImageCard = styled.div`
 
 interface ItemListProps {
   items: Item[];
+  setItems: Dispatch<SetStateAction<Item[]>>;
 }
 
 export default function ItemList(props: ItemListProps) {
-  const { items } = props;
+  const { items, setItems } = props;
+  const [currentItem, setCurrentItem] = useState<Item | null>(null);
+  const [isShowModal, setIsShowModal] = useState(false);
+
+  const startDeleteItem = (itemId: number) => {
+    let itemFound = items.find((item) => item.item_id === itemId);
+    if (itemFound) {
+      setCurrentItem(itemFound);
+    }
+    setIsShowModal(true);
+  };
+
+  const finishDeleteItem = () => {
+    setItems((prev) => {
+      return prev.filter((item) => item.item_id !== currentItem?.item_id);
+    });
+    setCurrentItem(null);
+  };
+
   return (
     <div className="row" style={{ paddingBottom: "40px" }}>
       <Wrapper>
@@ -183,7 +204,7 @@ export default function ItemList(props: ItemListProps) {
       </Wrapper>
       <Cards>
         {items.map((item) => (
-          <Card key={item.id}>
+          <Card key={item.item_id}>
             <ImageCard>
               <a href="" target="_blank" rel="noopener noreferrer">
                 <img src={item.media} alt="..." />
@@ -198,9 +219,22 @@ export default function ItemList(props: ItemListProps) {
             <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
               Auction
             </button>
+            <button
+              onClick={() => {
+                startDeleteItem(item.item_id);
+              }}
+              className="bg-red-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            >
+              Delete
+            </button>
           </Card>
         ))}
       </Cards>
+      <Modal
+        isShowModal={isShowModal}
+        setIsShowModal={setIsShowModal}
+        finishDeleteItem={finishDeleteItem}
+      />
     </div>
   );
 }

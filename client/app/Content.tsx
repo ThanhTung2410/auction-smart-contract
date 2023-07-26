@@ -94,7 +94,7 @@ const Content = () => {
           </form>
         )}
       </section>
-      <ItemList items={data} />
+      <ItemList items={data} setItems={setData} />
     </>
   );
 };

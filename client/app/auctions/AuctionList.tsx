@@ -11,6 +11,7 @@ import {
 } from "@/features/walletSlice";
 import { Auction } from "../@types/Auction.type";
 import Title from "../components/Title";
+import CountdownTimer from "../components/CountdownTimer/CountdownTimer";
 
 const CONTRACT_ID = process.env.NEXT_PUBLIC_CONTRACT_NAME || "";
 
@@ -142,6 +143,9 @@ export default function AuctionList(props: AuctionListProps) {
                 {auction.created_at}
               </Text>
             </div>
+
+            <CountdownTimer/>
+
             {account !== auction.host_id ? (
               <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                 Auction

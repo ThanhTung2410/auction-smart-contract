@@ -78,13 +78,13 @@ pub trait ImplUser {
     );
 
     /// Updates the role of a user and returns the updated user as a `JsonUser`.
-    fn update_role(&mut self) -> JsonUser;
+    fn update_role(&mut self, role: Roles) -> JsonUser;
 
     /// Returns a `JsonUser` representation of the user's metadata for the given user ID.
     fn get_user_metadata_by_user_id(&self, user_id: &UserId) -> Option<JsonUser>;
 
     /// Update user information
-    fn update_user_information(&mut self) -> JsonUser;
+    fn update_user_information(&mut self, name: String, avatar: Option<String>, email: String, phone: String, description: String) -> JsonUser; 
 
     /// Get all information of users
     fn get_all_user_metadata(&self, from_index: Option<u32>, limit: Option<u32>) -> Vec<JsonUser>;

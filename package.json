@@ -14,5 +14,8 @@
     "Dang"
   ],
   "author": "Dang Quang Vu <eamondang@gmail.com>",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "download": "^8.0.0"
+  }
 }

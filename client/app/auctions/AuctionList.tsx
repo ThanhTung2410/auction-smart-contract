@@ -3,14 +3,14 @@
 import styled from "styled-components";
 import { Item } from "../@types/Item.type";
 import { Dispatch, SetStateAction, useState, useEffect } from "react";
-import Modal from "./Modal";
 import { useAppSelector } from "@/context/store";
 import {
   selectAccountId,
   selectIsLoading,
   selectWallet,
 } from "@/features/walletSlice";
-import Title from "./Title";
+import { Auction } from "../@types/Auction.type";
+import Title from "../components/Title";
 
 const CONTRACT_ID = process.env.NEXT_PUBLIC_CONTRACT_NAME || "";
 
@@ -75,13 +75,13 @@ const ImageCard = styled.div`
   }
 `;
 
-interface ItemListProps {
-  items: Item[];
-  setItems: Dispatch<SetStateAction<Item[]>>;
+interface AuctionListProps {
+  auctions: Auction[];
+  setAuctions: Dispatch<SetStateAction<Auction[]>>;
 }
 
-export default function ItemList(props: ItemListProps) {
-  const { items, setItems } = props;
+export default function AuctionList(props: AuctionListProps) {
+  const { auctions, setAuctions } = props;
   const [currentItem, setCurrentItem] = useState<Item | null>(null);
   const [isShowModal, setIsShowModal] = useState(false);
   const wallet = useAppSelector(selectWallet);
@@ -117,50 +117,59 @@ export default function ItemList(props: ItemListProps) {
       });
   };
 
-  const startDeleteItem = (itemId: number) => {
-    let itemFound = items.find((item) => item.item_id === itemId);
-    if (itemFound) {
-      setCurrentItem(itemFound);
-    }
-    setIsShowModal(true);
-  };
+  // const startDeleteItem = (itemId: number) => {
+  //   let itemFound = items.find((item) => item.item_id === itemId);
+  //   if (itemFound) {
+  //     setCurrentItem(itemFound);
+  //   }
+  //   setIsShowModal(true);
+  // };
 
   return (
     <>
-      <Title name="Your Inventory" />
+      <Title name="List Auctions" />
       <Cards>
-        {items.map((item) => (
-          <Card key={item.item_id}>
+        {auctions.map((auction) => (
+          <Card key={auction.auction_id}>
             <ImageCard>
               <a href="" target="_blank" rel="noopener noreferrer">
-                <img src={item.media} alt="..." />
+                <img src="#" alt="..." />
               </a>
             </ImageCard>
             <div className="card-body p-2 mt-3">
-              <CardHeading>{item.name}</CardHeading>
+              <CardHeading>{auction.host_id}</CardHeading>
               <Text className="ps-2  pb-3 text-secondary">
-                {item.description}
+                {auction.created_at}
               </Text>
             </div>
-            <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-              Auction
-            </button>
-            <button
-              onClick={() => {
-                startDeleteItem(item.item_id);
-              }}
-              className="bg-red-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-            >
-              Delete
-            </button>
+            {account !== auction.host_id ? (
+              <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                Auction
+              </button>
+            ) : (
+              ""
+            )}
+
+            {account === auction.host_id ? (
+              <button
+                // onClick={() => {
+                //   startDeleteItem(item.item_id);
+                // }}
+                className="bg-red-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+              >
+                Delete
+              </button>
+            ) : (
+              ""
+            )}
           </Card>
         ))}
       </Cards>
-      <Modal
+      {/* <Modal
         isShowModal={isShowModal}
         setIsShowModal={setIsShowModal}
         finishDeleteItem={finishDeleteItem}
-      />
+      /> */}
     </>
   );
 }

@@ -63,6 +63,7 @@ impl AuctionContract {
             user_metadata_by_id: LookupMap::new(
                 ContractStorageKey::UserMetadataById.try_to_vec().unwrap(),
             ),
+            all_auctions: UnorderedSet::new(ContractStorageKey::AllAuctions.try_to_vec().unwrap()),
         }
     }
 }

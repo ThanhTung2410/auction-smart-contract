@@ -46,6 +46,15 @@ impl ImplAuction for AuctionContract {
         self.auctions_host_per_user
             .insert(&owner_id, &set_auction_user_host);
         self.auction_metadata_by_id.insert(&auction_id, &auction);
+        self.all_auctions.insert(&auction_id);
+    }
+
+    fn get_all_auctions(&self) -> Vec<AuctionMetadata> {
+        let mut result = Vec::new();
+        for auction_id in self.all_auctions.iter() {
+            result.push(self.get_auction_metadata_by_auction_id(auction_id).unwrap());
+        }
+        result
     }
 
     fn get_all_auctions_host_per_user(

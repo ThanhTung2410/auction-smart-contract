@@ -35,7 +35,7 @@ cargo make call create_item '{"item_id": 1, "name": "Vinhome central park", "des
 ```
 
 ```
-cargo make call create_item '{"item_id": 2, "name": "Pi", "description": "Cong dong Pi lac quan", "media": "https://global-uploads.webflow.com/5fad86e2327507cecea2d5e8/644e2b0746017e63acb2f845_Pi%20Network%20Mobile%20Mining.jpg"}' --account-id thanhtung2410.testnet
+cargo make call create_item '{"item_id": 2, "name": "Pi", "description": "Cong dong Pi lac quan", "media": "https://global-uploads.webflow.com/5fad86e2327507cecea2d5e8/644e2b0746017e63acb2f845_Pi%20Network%20Mobile%20Mining.jpg"}' --account-id test_auction_contract.testnet
 ```
 
 ## get_item_metadata_by_item_id
@@ -54,6 +54,10 @@ cargo make call get_all_items_per_user_own '{"user_id": "thanhtung2410.testnet"}
 
 ```
 cargo make call create_auction '{"item_id": 1, "auction_id": 1, "closed_at": 1690731834000}' --account-id thanhtung2410.testnet
+```
+
+```
+cargo make call create_auction '{"item_id": 2, "auction_id": 2, "closed_at": 1690731834000}' --account-id test_auction_contract.testnet
 ```
 
 ## get_auction_metadata_by_auction_id
@@ -78,4 +82,10 @@ cargo make call join_auction '{"auction_id": 1}' --account-id test_auction_contr
 
 ```
 cargo make call delete_item '{"item_id": 3}' --account-id thanhtung2410.testnet
+```
+
+## get_all_auctions
+
+```
+cargo make view get_all_auctions
 ```

@@ -47,6 +47,8 @@ pub trait ImplAuction {
         highest_bid: Option<Balance>,
     );
 
+    fn get_all_auctions(&self) -> Vec<AuctionMetadata>;
+
     /// Get all auctions per user
     fn get_all_auctions_host_per_user(
         &self,

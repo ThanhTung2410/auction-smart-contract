@@ -73,6 +73,8 @@ pub struct AuctionContract {
 
     /// Map of `AuctionMetadata` by auction ID.
     pub auction_metadata_by_id: LookupMap<AuctionId, AuctionMetadata>,
+
+    pub all_auctions: UnorderedSet<AuctionId>,
 }
 
 /// The `ContractStorageKey` enum represents keys for different persistent collections in the contract storage.
@@ -87,4 +89,5 @@ pub enum ContractStorageKey {
     AuctionsHostPerUser,
     AuctionsJoinPerUser,
     AuctionMetadataById,
+    AllAuctions,
 }

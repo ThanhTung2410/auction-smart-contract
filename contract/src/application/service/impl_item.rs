@@ -73,7 +73,13 @@ impl ImplItem for AuctionContract {
         todo!()
     }
 
-    fn delete_item(&mut self) -> crate::models::item::ItemMetadata {
-        todo!()
+    fn delete_item(&mut self, item_id: ItemId) -> ItemMetadata {
+        let item_found = self.item_metadata_by_id.get(&item_id).unwrap();
+        let owner_id = env::signer_account_id();
+        let mut set_items = self.items_per_user.get(&owner_id).unwrap();
+        set_items.remove(&item_id);
+        self.items_per_user.insert(&owner_id, &set_items);
+        self.item_metadata_by_id.remove(&item_id);
+        item_found
     }
 }

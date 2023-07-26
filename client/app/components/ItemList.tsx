@@ -5,6 +5,16 @@ import { Item } from "../@types/Item.type";
 import { Dispatch, SetStateAction, useState } from "react";
 import Modal from "./Modal";
 
+import { useAppSelector } from "@/context/store";
+import {
+  selectAccountId,
+  selectIsLoading,
+  selectWallet,
+} from "@/features/walletSlice";
+import { useEffect } from "react";
+
+const CONTRACT_ID = process.env.NEXT_PUBLIC_CONTRACT_NAME || "";
+
 const Wrapper = styled.div`
   --section-gap: 42px;
   padding-top: 42px;
@@ -167,6 +177,38 @@ export default function ItemList(props: ItemListProps) {
   const { items, setItems } = props;
   const [currentItem, setCurrentItem] = useState<Item | null>(null);
   const [isShowModal, setIsShowModal] = useState(false);
+  const wallet = useAppSelector(selectWallet);
+  const account = useAppSelector(selectAccountId);
+  const [walletReady, setWalletready] = useState(false);
+  const isLoading = useAppSelector(selectIsLoading);
+
+  useEffect(() => {
+    if (!isLoading && wallet) {
+      setWalletready(true);
+    }
+  }, [isLoading, wallet]);
+
+  const finishDeleteItem = async (e: any) => {
+    if (!wallet) {
+      console.error("Wallet is not initialized");
+      return;
+    }
+    setWalletready(false);
+    e.preventDefault();
+
+    await wallet
+      .callMethod({
+        contractId: CONTRACT_ID,
+        method: "delete_item",
+        args: { item_id: currentItem?.item_id },
+        gas: "300000000000000",
+      })
+      .then(() => setWalletready(true))
+      .then(() => setCurrentItem(null))
+      .then(() => {
+        window.location.reload();
+      });
+  };
 
   const startDeleteItem = (itemId: number) => {
     let itemFound = items.find((item) => item.item_id === itemId);
@@ -174,13 +216,6 @@ export default function ItemList(props: ItemListProps) {
       setCurrentItem(itemFound);
     }
     setIsShowModal(true);
-  };
-
-  const finishDeleteItem = () => {
-    setItems((prev) => {
-      return prev.filter((item) => item.item_id !== currentItem?.item_id);
-    });
-    setCurrentItem(null);
   };
 
   return (

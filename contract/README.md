@@ -73,3 +73,9 @@ cargo make call delete_auction '{"auction_id": 1}' --account-id thanhtung2410.te
 ```
 cargo make call join_auction '{"auction_id": 1}' --account-id test_auction_contract.testnet --amount 1
 ```
+
+## delete_item
+
+```
+cargo make call delete_item '{"item_id": 3}' --account-id thanhtung2410.testnet
+```

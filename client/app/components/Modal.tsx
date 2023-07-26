@@ -3,7 +3,7 @@ import { Dispatch, SetStateAction, useState } from "react";
 interface ModalProps {
   isShowModal: boolean;
   setIsShowModal: Dispatch<SetStateAction<boolean>>;
-  finishDeleteItem: () => void;
+  finishDeleteItem: (e: any) => Promise<void>;
 }
 
 export default function Modal(props: ModalProps) {
@@ -42,9 +42,9 @@ export default function Modal(props: ModalProps) {
                   <button
                     className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
                     type="button"
-                    onClick={() => {
+                    onClick={(event) => {
                       setIsShowModal(false);
-                      finishDeleteItem();
+                      finishDeleteItem(event);
                     }}
                   >
                     Delete

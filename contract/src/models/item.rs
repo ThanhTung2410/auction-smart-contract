@@ -50,5 +50,5 @@ pub trait ImplItem {
 
     fn update_item(&mut self);
 
-    fn delete_item(&mut self) -> ItemMetadata;
+    fn delete_item(&mut self, item_id: ItemId) -> ItemMetadata;
 }

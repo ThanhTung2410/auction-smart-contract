@@ -89,3 +89,26 @@ cargo make call delete_item '{"item_id": 3}' --account-id thanhtung2410.testnet
 ```
 cargo make view get_all_auctions
 ```
+
+## create user #2
+```
+cargo make call create_user '{"name": "Sang", "avatar": "None", "email": "abc@gmail.com", "phone": "091201", "description":"None"}' --account-id calocnuong.testnet
+```
+
+## update user information
+
+```
+cargo make call update_user_information '{"name": "Tran Phuoc Sang", "avatar": "None", "email": "transhack09@gmail.com", "phone": "0123456789", "description":"None"}' --account-id calocnuong.testnet                                                        
+```
+
+## update user role
+
+```
+cargo make call update_role '{"role":"Participant"}' --account-id calocnuong.testnet                                                  
+```
+
+## check user role
+
+```
+cargo make call check_user_role '{"user_id": "calocnuong.testnet"}' --account-id calocnuong.testnet          
+ ```

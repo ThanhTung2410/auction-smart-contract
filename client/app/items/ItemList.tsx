@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import styled from "styled-components";
 import { Item } from "../@types/Item.type";
@@ -12,7 +13,6 @@ import {
   selectWallet,
 } from "@/features/walletSlice";
 import Title from "../components/Title";
-import { Router } from "next/router";
 
 const CONTRACT_ID = process.env.NEXT_PUBLIC_CONTRACT_NAME || "";
 
@@ -132,13 +132,29 @@ export default function ItemList(props: ItemListProps) {
   return (
     <>
       <Title name="Your Inventory" />
+      <div>
+        <Link href="/items/add">
+          <button
+            className="bg-blue-500 hover:bg-blue-700 font-bold py-2 px-4 rounded text-white"
+            style={{ margin: "0 auto", display: "block" }}
+          >
+            Add item
+          </button>
+        </Link>
+      </div>
+
       <Cards>
         {items.map((item) => (
           <Card key={item.item_id}>
             <ImageCard>
-              <a href="" target="_blank" rel="noopener noreferrer">
+              <Link
+                href={{
+                  pathname: "/items/detail",
+                  query: { id: item.item_id },
+                }}
+              >
                 <img src={item.media} alt="..." />
-              </a>
+              </Link>
             </ImageCard>
             <div className="card-body p-2 mt-3">
               <CardHeading>{item.name}</CardHeading>
@@ -146,18 +162,16 @@ export default function ItemList(props: ItemListProps) {
                 {item.description}
               </Text>
             </div>
-            <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-              Auction
-            </button>
             <button
               onClick={() => {
                 startDeleteItem(item.item_id);
               }}
-              className="bg-red-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+              className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
             >
               Delete
             </button>
             <button
+              className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
               onClick={() => {
                 router.push("/items/edit?id=" + item.item_id);
               }}

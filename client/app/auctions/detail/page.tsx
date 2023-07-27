@@ -453,8 +453,9 @@ const MarketplaceListed = styled.div`
 export default function page() {
   const wallet = useAppSelector(selectWallet);
   const account = useAppSelector(selectAccountId);
+  const [bid, setBid] = useState<number>(0);
   const [auction, setAuction] = useState<Auction | null>(null);
-  const [walletReady, setWalletready] = useState(false);
+  const [walletReady, setWalletReady] = useState(false);
   const isLoading = useAppSelector(selectIsLoading);
 
   const searchParams = useSearchParams();
@@ -463,7 +464,7 @@ export default function page() {
 
   useEffect(() => {
     if (!isLoading && wallet) {
-      setWalletready(true);
+      setWalletReady(true);
     }
   }, [isLoading, wallet]);
 
@@ -497,6 +498,33 @@ export default function page() {
     };
     getData();
   }, [walletReady]);
+
+  const changeMessage = async (e: any) => {
+    if (!wallet) {
+      console.error("Wallet is not initialized");
+      return;
+    }
+    setWalletReady(false);
+    e.preventDefault();
+
+    const tenPow24 = "000000000000000000000000";
+    const bidInYoctoNear = bid + tenPow24;
+
+    await wallet
+      .callMethod({
+        contractId: CONTRACT_ID,
+        method: "join_auction",
+        args: { auction_id: id },
+        deposit: bidInYoctoNear,
+        gas: "300000000000000",
+      })
+      .then(() => setWalletReady(true))
+      .then(() => window.location.reload());
+  };
+
+  const handleChange = (event: any) => {
+    setBid(event.target.value);
+  };
 
   return (
     <Root>
@@ -570,9 +598,10 @@ export default function page() {
               </div>
               <div>
                 <PriceArea>
-                  <form>
+                  <form onSubmit={changeMessage}>
                     <label>Enter the amount you want to bid</label> (NEAR)
-                    <input type="number" />
+                    <input type="number" value={bid} onChange={handleChange} />
+                    <button>Bid</button>
                   </form>
 
                   {/* <h6>{price.toFixed(2)}</h6>

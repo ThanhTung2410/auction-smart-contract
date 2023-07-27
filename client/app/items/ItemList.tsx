@@ -4,14 +4,14 @@ import { useRouter } from "next/navigation";
 import styled from "styled-components";
 import { Item } from "../@types/Item.type";
 import { Dispatch, SetStateAction, useState, useEffect } from "react";
-import Modal from "./Modal";
+import Modal from "../components/Modal";
 import { useAppSelector } from "@/context/store";
 import {
   selectAccountId,
   selectIsLoading,
   selectWallet,
 } from "@/features/walletSlice";
-import Title from "./Title";
+import Title from "../components/Title";
 import { Router } from "next/router";
 
 const CONTRACT_ID = process.env.NEXT_PUBLIC_CONTRACT_NAME || "";
@@ -54,7 +54,7 @@ const Card = styled.div`
 
 const CardHeading = styled.h5`
   font-size: 1.25rem;
-  font-weght: 500;
+  font-weight: 500;
   color: #09011a;
 `;
 

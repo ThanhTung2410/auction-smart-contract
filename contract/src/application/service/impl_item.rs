@@ -69,8 +69,13 @@ impl ImplItem for AuctionContract {
         vec_items
     }
 
-    fn update_item(&mut self) {
-        todo!()
+    fn update_item(&mut self, item_id: ItemId, name: String, media: String, description: String) {
+        let mut item = self.get_item_metadata_by_item_id(item_id).unwrap();
+        item.updated_at = env::block_timestamp_ms();
+        item.name = name;
+        item.media = media;
+        item.description = description;
+        self.item_metadata_by_id.insert(&item_id, &item);
     }
 
     fn delete_item(&mut self, item_id: ItemId) -> ItemMetadata {

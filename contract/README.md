@@ -89,3 +89,9 @@ cargo make call delete_item '{"item_id": 3}' --account-id thanhtung2410.testnet
 ```
 cargo make view get_all_auctions
 ```
+
+## update_item
+
+```
+cargo make call update_item '{"item_id": 1, "name": "Test update item", "media": "Test update item", "description": "Test update item"}' --account-id thanhtung2410.testnet
+```

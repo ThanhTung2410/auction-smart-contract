@@ -48,7 +48,7 @@ pub trait ImplItem {
         limit: Option<u32>,
     ) -> Vec<ItemMetadata>;
 
-    fn update_item(&mut self);
+    fn update_item(&mut self, item_id: ItemId, name: String, media: String, description: String);
 
     fn delete_item(&mut self, item_id: ItemId) -> ItemMetadata;
 }

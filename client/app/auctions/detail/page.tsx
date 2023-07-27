@@ -1,6 +1,17 @@
 "use client";
 
 import styled from "styled-components";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
+import { useAppSelector } from "@/context/store";
+import {
+  selectAccountId,
+  selectIsLoading,
+  selectWallet,
+} from "@/features/walletSlice";
+import { Auction } from "@/app/@types/Auction.type";
+
+const CONTRACT_ID = process.env.NEXT_PUBLIC_CONTRACT_NAME || "";
 
 const Root = styled.div`
   color: black; // hard code
@@ -440,6 +451,53 @@ const MarketplaceListed = styled.div`
 // };
 
 export default function page() {
+  const wallet = useAppSelector(selectWallet);
+  const account = useAppSelector(selectAccountId);
+  const [auction, setAuction] = useState<Auction | null>(null);
+  const [walletReady, setWalletready] = useState(false);
+  const isLoading = useAppSelector(selectIsLoading);
+
+  const searchParams = useSearchParams();
+
+  const id = parseInt(searchParams.get("id"));
+
+  useEffect(() => {
+    if (!isLoading && wallet) {
+      setWalletready(true);
+    }
+  }, [isLoading, wallet]);
+
+  useEffect(() => {
+    const getData = async () => {
+      if (wallet) {
+        const result = await wallet.viewMethod({
+          contractId: CONTRACT_ID,
+          method: "get_auction_metadata_by_auction_id",
+          args: {
+            auction_id: id,
+          },
+        });
+
+        const item = await wallet.viewMethod({
+          contractId: CONTRACT_ID,
+          method: "get_item_metadata_by_item_id",
+          args: {
+            item_id: result?.item_id,
+          },
+        });
+
+        let newResult: Auction = {
+          ...result,
+          item_metadata: item,
+        };
+
+        await setAuction(newResult);
+        console.log(newResult);
+      }
+    };
+    getData();
+  }, [walletReady]);
+
   return (
     <Root>
       <MainContainer>
@@ -455,32 +513,15 @@ export default function page() {
           <TopImageContainer>
             <HeaderText>
               {/* hard code for text */}
-              Vinhome central park
+              {auction?.item_metadata.name}
             </HeaderText>
             <img
-              src={
-                "https://ipfs.io/ipfs/Qmdg5Bw1L892esUXzjJS4sBPh1ND5QuMBDYFwugcP8ScHT"
-              }
+              src={auction?.item_metadata.media}
               alt="NFT"
               width="100%"
               height="100%"
               className="rounded-3"
             />
-
-            {/* <img
-              src={
-                props.state.singleNftProps.image
-                  ? props.state.singleNftProps?.image.replace(
-                      "ipfs://",
-                      "https://ipfs.io/ipfs/"
-                    )
-                  : "https://ipfs.io/ipfs/Qmdg5Bw1L892esUXzjJS4sBPh1ND5QuMBDYFwugcP8ScHT"
-              }
-              alt="NFT"
-              width="100%"
-              height="100%"
-              className="rounded-3"
-            /> */}
             <div
               style={{
                 display: "flex",
@@ -495,19 +536,10 @@ export default function page() {
                   color: "#0d99ff",
                 }}
               >
-                Owned by
+                Host by
               </p>
               <span style={{ fontSize: "0.9rem", fontWeight: 600 }}>
-                test_auction_contract.testnet
-                {/* {`${
-                  props.state.singleNftProps.owner
-                    ? props.state.singleNftProps.owner.slice(0, 6)
-                    : "0x022"
-                }...${
-                  props.state.singleNftProps.owner
-                    ? props.state.singleNftProps.owner.slice(36)
-                    : "78f13"
-                }`} */}
+                {auction?.host_id}
               </span>
             </div>
           </TopImageContainer>
@@ -522,11 +554,9 @@ export default function page() {
             )} */}
             <PriceBucket>
               <div>
-                <p style={{ color: "#b2b7c2", marginBottom: 0 }}>
-                  CURRENT PRICE
-                </p>
+                <p style={{ color: "#b2b7c2", marginBottom: 0 }}>CURRENT BID</p>
                 <PriceArea>
-                  0.00 ($ 0 )
+                  {auction?.highest_bid} (NEAR)
                   {/* <h6>{price.toFixed(2)}</h6>
                   <span>
                     ($
@@ -539,40 +569,22 @@ export default function page() {
                 </PriceArea>
               </div>
               <div>
-                {/*  what is this use for? */}
+                <PriceArea>
+                  <form>
+                    <label>Enter the amount you want to bid</label> (NEAR)
+                    <input type="number" />
+                  </form>
 
-                {/* {props.state.singleNftProps.isListed &&
-                  (props.state.singleNftProps.owner == props.state.sender ? (
-                    <button
-                      style={{
-                        backgroundColor: "#525c76",
-                        borderColor: "#525c76",
-                        cursor: "not-allowed",
-                      }}
-                    >
-                      Listed
-                    </button>
-                  ) : (
-                    <button disabled={state.disabled} onClick={handleBuyClick}>
-                      Buy
-                    </button>
-                  ))} */}
-                {/* {!props.state.singleNftProps.isListed &&
-                  (props.state.singleNftProps.owner == props.state.sender ? (
-                    <button disabled={state.disabled} onClick={handleListing}>
-                      List
-                    </button>
-                  ) : (
-                    <button
-                      style={{
-                        backgroundColor: "#525c76",
-                        borderColor: "#525c76",
-                        cursor: "not-allowed",
-                      }}
-                    >
-                      Not Listed
-                    </button>
-                  ))} */}
+                  {/* <h6>{price.toFixed(2)}</h6>
+                  <span>
+                    ($
+                    {getUsdValue(
+                      props.state.singleNftProps.price *
+                        PRICE_CONVERSION_VALUE || 0
+                    )}
+                    )
+                  </span> */}
+                </PriceArea>
               </div>
               {/* copy to test */}
               {/* <Popup>
@@ -648,12 +660,7 @@ export default function page() {
             </PriceBucket>
             <Description>
               <h6>Description</h6>
-              <span>
-                {/* test */}
-                Green Plant man on the moon
-                {/* {props.state.singleNftProps.description ||
-                  "Green Plant man on the moon"} */}
-              </span>
+              <span>{auction?.item_metadata.description}</span>
             </Description>
             <Description>
               <h6>Attributes</h6>
@@ -725,27 +732,12 @@ export default function page() {
             <Description>
               <h6>Details</h6>
               <MintDetails>
-                <span>Mint Address</span>
-                {/* <a
-                  target="_blank"
-                  href={`${
-                    currentChain[props.state.singleNftProps.chain ?? "137"]
-                      .explorer
-                  }/address/${
-                    props.state.singleNftProps.owner ||
-                    "0xfb6d5faa665783f4e4a1f5b198797c4d39478f13"
-                  }`}
-                >
-                  {`${
-                    props.state.singleNftProps.owner
-                      ? props.state.singleNftProps.owner.slice(0, 6)
-                      : "0x022"
-                  }...${
-                    props.state.singleNftProps.owner
-                      ? props.state.singleNftProps.owner.slice(36)
-                      : "78f13"
-                  }`}
-                </a> */}
+                <span>Created at</span>
+                {new Date(auction?.created_at).toLocaleString()}
+              </MintDetails>
+              <MintDetails>
+                <span>Updated at</span>
+                {new Date(auction?.updated_at).toLocaleString()}
               </MintDetails>
             </Description>
           </RightSection>

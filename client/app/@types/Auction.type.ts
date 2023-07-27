@@ -1,3 +1,4 @@
+import { Item } from "./Item.type";
 import { User } from "./User.type";
 
 export interface Auction {
@@ -10,4 +11,5 @@ export interface Auction {
   highest_bid: number;
   users_join_auction: User[];
   item_id: number;
+  item_metadata: Item;
 }

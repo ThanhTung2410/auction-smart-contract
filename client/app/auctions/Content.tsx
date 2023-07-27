@@ -32,8 +32,26 @@ const Content = () => {
           contractId: CONTRACT_ID,
           method: "get_all_auctions",
         });
-        setData(result);
-        console.log(result);
+
+        const newResult = await Promise.all(
+          result.map(async (auction: Auction) => {
+            const item = await wallet.viewMethod({
+              contractId: CONTRACT_ID,
+              method: "get_item_metadata_by_item_id",
+              args: {
+                item_id: auction.item_id,
+              },
+            });
+            let newAuction = {
+              ...auction,
+              item_metadata: item,
+            };
+            return newAuction;
+          })
+        );
+
+        await setData(newResult);
+        console.log(newResult);
       }
     };
     getData();

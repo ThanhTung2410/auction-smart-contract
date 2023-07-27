@@ -53,7 +53,7 @@ const Card = styled.div`
 
 const CardHeading = styled.h5`
   font-size: 1.25rem;
-  font-weght: 500;
+  font-weight: 500;
   color: #09011a;
 `;
 
@@ -107,7 +107,7 @@ export default function AuctionList(props: AuctionListProps) {
     await wallet
       .callMethod({
         contractId: CONTRACT_ID,
-        method: "delete_item",
+        method: "delete_auction",
         args: { item_id: currentItem?.item_id },
         gas: "300000000000000",
       })
@@ -133,18 +133,18 @@ export default function AuctionList(props: AuctionListProps) {
         {auctions.map((auction) => (
           <Card key={auction.auction_id}>
             <ImageCard>
-              <a href="" target="_blank" rel="noopener noreferrer">
-                <img src="#" alt="..." />
+              <a href={"/auctions/detail?id=" + auction.auction_id}>
+                <img src={auction?.item_metadata?.media} alt="..." />
               </a>
             </ImageCard>
             <div className="card-body p-2 mt-3">
-              <CardHeading>{auction.host_id}</CardHeading>
+              <CardHeading>{auction.item_metadata.name}</CardHeading>
               <Text className="ps-2  pb-3 text-secondary">
-                {auction.created_at}
+                {auction.item_metadata.description} Host: {auction.host_id}
               </Text>
             </div>
 
-            <CountdownTimer/>
+            <CountdownTimer />
 
             {account !== auction.host_id ? (
               <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">

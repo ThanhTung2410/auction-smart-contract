@@ -69,9 +69,32 @@ impl ImplItem for AuctionContract {
         vec_items
     }
 
-    fn update_item(&mut self) {
-        todo!()
-    }
+    fn update_item(
+        &mut self,
+        item_id: ItemId,
+        name: String,
+        description: String,
+        media: String,
+    ) -> Option<ItemMetadata> {
+        let owner_id = env::signer_account_id();
+    
+        if let Some(mut item_metadata) = self.get_item_metadata_by_item_id(item_id) {
+            assert_eq!(
+                item_metadata.owner_id, owner_id,
+                "User does not own the item"
+            );
+    
+            item_metadata.name = name;
+            item_metadata.description = description;
+            item_metadata.media = media;
+            item_metadata.updated_at = env::block_timestamp();
+    
+            self.item_metadata_by_id.insert(&item_id, &item_metadata);
+            Some(item_metadata) 
+        } else {
+            None 
+        }
+    }    
 
     fn delete_item(&mut self, item_id: ItemId) -> ItemMetadata {
         let item_found = self.item_metadata_by_id.get(&item_id).unwrap();

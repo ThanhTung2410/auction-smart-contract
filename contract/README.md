@@ -37,6 +37,15 @@ cargo make call create_item '{"item_id": 1, "name": "Vinhome central park", "des
 ```
 cargo make call create_item '{"item_id": 2, "name": "Pi", "description": "Cong dong Pi lac quan", "media": "https://global-uploads.webflow.com/5fad86e2327507cecea2d5e8/644e2b0746017e63acb2f845_Pi%20Network%20Mobile%20Mining.jpg"}' --account-id test_auction_contract.testnet
 ```
+## update_item
+```
+cargo make call update_item '{"item_id":1, "name": "VinHome Central Park VIP", "description": "Khu can ho cao cap hoang gia", "media": "https://vinhomecentralpark.com/wp-content/uploads/2021/02/mat-bang-vinhomes-central-park.jpg"}' --account-id thanhtung2410.testnet    
+```
+
+```
+cargo make call update_item '{"item_id": 2, "name": "Pi", "description": "Cong dong Pi lac quan so mot Viet Nam", "media": "https://global-uploads.webflow.com/5fad86e2327507cecea2d5e8/644e2b0746017e63acb2f845_Pi%20Network%20Mobile%20Mining.jpg"}' --account-id thanhtung2410.testnet
+```
+
 
 ## get_item_metadata_by_item_id
 

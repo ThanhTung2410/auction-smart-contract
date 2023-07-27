@@ -31,9 +31,9 @@ impl ImplItem for AuctionContract {
 
             owner_id: owner_id.clone(),
 
-            created_at: env::block_timestamp(),
+            created_at: env::block_timestamp_ms(),
 
-            updated_at: env::block_timestamp(),
+            updated_at: env::block_timestamp_ms(),
 
             is_auction: false,
         };

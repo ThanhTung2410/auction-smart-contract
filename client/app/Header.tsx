@@ -39,32 +39,29 @@ const Header = (props: IHeaderProps) => {
         <nav>
           <ul className="hidden lg:flex items-center justify-between space-x-4 font-light text-[14px]">
             <Link
-              href="https://youtube.com/@eamontech"
-              target="_blank"
+              href="/items"
               className="flex flex-col items-end justify-end group"
             >
               <p className="text-[12px] text-gray-500 group-hover:animate-ping">
                 01 //
               </p>
               <li className="text-[15px] text-gray-600 group-hover:underline">
-                Youtube
+                Inventory
               </li>
             </Link>
             <Link
-              href="https://t.me/eamondang"
-              target="_blank"
+              href="/auctions"
               className="flex flex-col items-end justify-end group"
             >
               <p className="text-[12px] text-gray-500 group-hover:animate-ping">
                 02 //
               </p>
               <li className="text-[15px] text-gray-600 group-hover:underline">
-                Contact
+                Auctions
               </li>
             </Link>
             <Link
-              href="https://facebook.com/eamondang"
-              target="_blank"
+              href="/users"
               className="flex flex-col items-end justify-end group"
             >
               <p className="text-[12px] text-gray-500 group-hover:animate-ping">

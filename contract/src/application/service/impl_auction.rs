@@ -86,24 +86,15 @@ impl ImplAuction for AuctionContract {
         let mut auction = self
             .get_auction_metadata_by_auction_id(auction_id.clone())
             .unwrap();
+
         let highest_bid = auction.highest_bid.or_else(|| auction.floor_price).unwrap();
 
-        let bid = env::attached_deposit() / ONE_NEAR;
-
-        // check condition
-        assert!(
-            bid > highest_bid,
-            "You need to pay more than the highest bid"
-        );
-        assert!(
-            env::block_timestamp_ms() < auction.closed_at,
-            "The auction is closed"
-        );
+        let mut bid = env::attached_deposit() / ONE_NEAR;
 
         let user_join_id = env::signer_account_id();
 
         // each auction if user join will have one bid transaction
-        // if user want to bid higher in that auction than the previous we will update that transaction
+        // if user want to bid higher in that auction than the previous we will update that old transaction
 
         // same to set auctions user join
         let mut set_transactions_user_have = self
@@ -121,9 +112,11 @@ impl ImplAuction for AuctionContract {
         });
 
         if !transaction_found.is_none() {
-            let tmp = transaction_found.unwrap();
+            let tmp = transaction_found.unwrap(); // rename var
             let mut update_transaction = tmp.clone();
-            update_transaction.total_bid += bid;
+            let bid_clone = bid.clone(); // rename var
+            bid += update_transaction.total_bid; // correct
+            update_transaction.total_bid += bid_clone;
             update_transaction.updated_at = env::block_timestamp_ms();
             set_transactions_user_have.remove(&tmp);
             set_transactions_user_have.insert(&update_transaction);
@@ -136,6 +129,16 @@ impl ImplAuction for AuctionContract {
             };
             set_transactions_user_have.insert(&bid_transaction);
         }
+
+        // check condition
+        assert!(
+            bid > highest_bid,
+            "You need to pay more than the highest bid"
+        );
+        assert!(
+            env::block_timestamp_ms() < auction.closed_at,
+            "The auction is closed"
+        );
 
         auction.winner = Some(env::signer_account_id());
         auction.highest_bid = Some(bid);

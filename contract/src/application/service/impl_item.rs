@@ -6,22 +6,21 @@ use crate::models::{contract::AuctionContract, item::ImplItem};
 use near_sdk::collections::UnorderedSet;
 use near_sdk::{env, near_bindgen};
 
+fn convert_to_item_id(owner: UserId, name: String) -> String {
+    let item = "item ".to_ascii_lowercase();
+    let owner_convert = owner.to_string().to_ascii_lowercase();
+    let result = item + &name + " " + &owner_convert;
+    result.replace(' ', "_")
+}
+
 #[near_bindgen]
 /// Implement function for item
 impl ImplItem for AuctionContract {
-    fn create_item(
-        &mut self,
-        item_id: ItemId,
-
-        name: String,
-
-        description: String,
-
-        media: String,
-    ) -> ItemMetadata {
+    fn create_item(&mut self, name: String, description: String, media: String) -> ItemMetadata {
         let owner_id = env::signer_account_id();
+        let item_id = convert_to_item_id(owner_id.clone(), name.clone());
         let item = ItemMetadata {
-            item_id,
+            item_id: item_id.clone(),
 
             name,
 
@@ -37,6 +36,7 @@ impl ImplItem for AuctionContract {
 
             is_auction: false,
         };
+
         let mut set_items = self
             .items_per_user
             .get(&owner_id)
@@ -77,24 +77,24 @@ impl ImplItem for AuctionContract {
         media: String,
     ) -> Option<ItemMetadata> {
         let owner_id = env::signer_account_id();
-    
-        if let Some(mut item_metadata) = self.get_item_metadata_by_item_id(item_id) {
+
+        if let Some(mut item_metadata) = self.get_item_metadata_by_item_id(item_id.clone()) {
             assert_eq!(
                 item_metadata.owner_id, owner_id,
                 "User does not own the item"
             );
-    
+
             item_metadata.name = name;
             item_metadata.description = description;
             item_metadata.media = media;
-            item_metadata.updated_at = env::block_timestamp();
-    
+            item_metadata.updated_at = env::block_timestamp_ms();
+
             self.item_metadata_by_id.insert(&item_id, &item_metadata);
-            Some(item_metadata) 
+            Some(item_metadata)
         } else {
-            None 
+            None
         }
-    }    
+    }
 
     fn delete_item(&mut self, item_id: ItemId) -> ItemMetadata {
         let item_found = self.item_metadata_by_id.get(&item_id).unwrap();

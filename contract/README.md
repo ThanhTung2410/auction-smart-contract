@@ -16,10 +16,16 @@ cargo make dev-deploy
 cargo make call-self init
 ```
 
-## create new user
+# User
+
+## create user
 
 ```
 cargo make call create_user '{"name": "John Doe", "avatar": "https://e7.pngegg.com/pngimages/84/165/png-clipart-united-states-avatar-organization-information-user-avatar-service-computer-wallpaper-thumbnail.png", "email": "johndoe@gmail.com", "phone": "202-555-0188", "description": "Hi! I am Blockchain Dev"}' --account-id thanhtung2410.testnet
+```
+
+```
+cargo make call create_user '{"name": "Sang", "avatar": "None", "email": "abc@gmail.com", "phone": "091201", "description":"None"}' --account-id calocnuong.testnet
 ```
 
 ## get_user_metadata_by_user_id
@@ -28,29 +34,38 @@ cargo make call create_user '{"name": "John Doe", "avatar": "https://e7.pngegg.c
 cargo make call get_user_metadata_by_user_id '{"user_id": "thanhtung2410.testnet"}' --account-id thanhtung2410.testnet
 ```
 
+## update user information
+
+```
+cargo make call update_user_information '{"name": "Tran Phuoc Sang", "avatar": "None", "email": "transhack09@gmail.com", "phone": "0123456789", "description":"None"}' --account-id calocnuong.testnet
+```
+
+# Item
+
 ## create_item
 
 ```
-cargo make call create_item '{"item_id": 1, "name": "Vinhome central park", "description": "Khu can ho cao cap", "media": "https://vinhomecentralpark.com/wp-content/uploads/2021/02/mat-bang-vinhomes-central-park.jpg"}' --account-id thanhtung2410.testnet
+cargo make call create_item '{"name": "Vinhome central park", "description": "Khu can ho cao cap", "media": "https://vinhomecentralpark.com/wp-content/uploads/2021/02/mat-bang-vinhomes-central-park.jpg"}' --account-id thanhtung2410.testnet
 ```
 
 ```
-cargo make call create_item '{"item_id": 2, "name": "Pi", "description": "Cong dong Pi lac quan", "media": "https://global-uploads.webflow.com/5fad86e2327507cecea2d5e8/644e2b0746017e63acb2f845_Pi%20Network%20Mobile%20Mining.jpg"}' --account-id test_auction_contract.testnet
+cargo make call create_item '{"name": "Pi", "description": "Cong dong Pi lac quan", "media": "https://global-uploads.webflow.com/5fad86e2327507cecea2d5e8/644e2b0746017e63acb2f845_Pi%20Network%20Mobile%20Mining.jpg"}' --account-id test_auction_contract.testnet
 ```
+
 ## update_item
+
 ```
-cargo make call update_item '{"item_id":1, "name": "VinHome Central Park VIP", "description": "Khu can ho cao cap hoang gia", "media": "https://vinhomecentralpark.com/wp-content/uploads/2021/02/mat-bang-vinhomes-central-park.jpg"}' --account-id thanhtung2410.testnet    
+cargo make call update_item '{"item_id": "item_Vinhome_central_park_thanhtung2410.testnet", "name": "VinHome Central Park VIP", "description": "Khu can ho cao cap hoang gia", "media": "https://vinhomecentralpark.com/wp-content/uploads/2021/02/mat-bang-vinhomes-central-park.jpg"}' --account-id thanhtung2410.testnet
 ```
 
 ```
-cargo make call update_item '{"item_id": 2, "name": "Pi", "description": "Cong dong Pi lac quan so mot Viet Nam", "media": "https://global-uploads.webflow.com/5fad86e2327507cecea2d5e8/644e2b0746017e63acb2f845_Pi%20Network%20Mobile%20Mining.jpg"}' --account-id thanhtung2410.testnet
+cargo make call update_item '{"item_id": "item_Pi_test_auction_contract.testnet", "name": "Pi", "description": "Cong dong Pi lac quan so mot Viet Nam", "media": "https://global-uploads.webflow.com/5fad86e2327507cecea2d5e8/644e2b0746017e63acb2f845_Pi%20Network%20Mobile%20Mining.jpg"}' --account-id test_auction_contract.testnet
 ```
-
 
 ## get_item_metadata_by_item_id
 
 ```
-cargo make call get_item_metadata_by_item_id '{"item_id": 1}' --account-id thanhtung2410.testnet
+cargo make call get_item_metadata_by_item_id '{"item_id": "item_Vinhome_central_park_thanhtung2410.testnet"}' --account-id thanhtung2410.testnet
 ```
 
 ## get_all_items_per_user_own
@@ -58,6 +73,14 @@ cargo make call get_item_metadata_by_item_id '{"item_id": 1}' --account-id thanh
 ```
 cargo make call get_all_items_per_user_own '{"user_id": "thanhtung2410.testnet"}' --account-id thanhtung2410.testnet
 ```
+
+## delete_item
+
+```
+cargo make call delete_item '{"item_id": "item_Vinhome_central_park_thanhtung2410.testnet"}' --account-id thanhtung2410.testnet
+```
+
+# Auction
 
 ## create_auction
 
@@ -87,43 +110,8 @@ cargo make call delete_auction '{"auction_id": 1}' --account-id thanhtung2410.te
 cargo make call join_auction '{"auction_id": 1}' --account-id test_auction_contract.testnet --amount 1
 ```
 
-## delete_item
-
-```
-cargo make call delete_item '{"item_id": 3}' --account-id thanhtung2410.testnet
-```
-
 ## get_all_auctions
 
 ```
 cargo make view get_all_auctions
 ```
-
-## update_item
-
-```
-cargo make call update_item '{"item_id": 1, "name": "Test update item", "media": "Test update item", "description": "Test update item"}' --account-id thanhtung2410.testnet
-```
-
-## create user #2
-```
-cargo make call create_user '{"name": "Sang", "avatar": "None", "email": "abc@gmail.com", "phone": "091201", "description":"None"}' --account-id calocnuong.testnet
-```
-
-## update user information
-
-```
-cargo make call update_user_information '{"name": "Tran Phuoc Sang", "avatar": "None", "email": "transhack09@gmail.com", "phone": "0123456789", "description":"None"}' --account-id calocnuong.testnet                                                        
-```
-
-## update user role
-
-```
-cargo make call update_role '{"role":"Participant"}' --account-id calocnuong.testnet                                                  
-```
-
-## check user role
-
-```
-cargo make call check_user_role '{"user_id": "calocnuong.testnet"}' --account-id calocnuong.testnet          
- ```

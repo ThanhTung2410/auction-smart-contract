@@ -3,7 +3,7 @@ use near_sdk::serde::{Deserialize, Serialize};
 
 use super::user::UserId;
 
-pub type ItemId = u128;
+pub type ItemId = String;
 
 #[derive(BorshDeserialize, BorshSerialize, Deserialize, Serialize, Debug)]
 #[serde(crate = "near_sdk::serde")]
@@ -29,8 +29,6 @@ pub struct ItemMetadata {
 pub trait ImplItem {
     fn create_item(
         &mut self,
-        item_id: ItemId,
-
         name: String,
 
         description: String,

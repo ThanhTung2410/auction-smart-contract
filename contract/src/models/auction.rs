@@ -2,9 +2,10 @@ use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
 use near_sdk::serde::{Deserialize, Serialize};
 use near_sdk::{Balance, __private::schemars::Set};
 
+use super::bid_transaction::BidTransaction;
 use super::{item::ItemId, user::UserId};
 
-pub type AuctionId = u128;
+pub type AuctionId = String;
 
 #[derive(BorshDeserialize, BorshSerialize, Deserialize, Serialize, Debug)]
 #[serde(crate = "near_sdk::serde")]
@@ -25,8 +26,6 @@ pub struct AuctionMetadata {
 
     pub highest_bid: Option<Balance>,
 
-    pub users_join_auction: Set<UserId>,
-
     pub item_id: ItemId,
 }
 
@@ -34,7 +33,6 @@ pub trait ImplAuction {
     /// Create new auction by user
     fn create_auction(
         &mut self,
-        item_id: ItemId,
 
         auction_id: AuctionId,
 
@@ -59,4 +57,10 @@ pub trait ImplAuction {
     fn delete_auction(&mut self, auction_id: AuctionId);
 
     fn join_auction(&mut self, auction_id: AuctionId); // payment
+
+    fn get_user_bid_transaction_by_auction_id(
+        &self,
+        auction_id: AuctionId,
+        user_id: UserId,
+    ) -> Option<BidTransaction>;
 }

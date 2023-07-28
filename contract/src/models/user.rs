@@ -67,8 +67,12 @@ pub trait ImplUser {
     fn get_user_metadata_by_user_id(&self, user_id: &UserId) -> Option<JsonUser>;
 
     /// Update user information
-    fn update_user_information(&mut self, name: String, avatar: Option<String>, email: String, phone: String, description: String) -> JsonUser; 
-
-    /// Get all information of users
-    fn get_all_user_metadata(&self, from_index: Option<u32>, limit: Option<u32>) -> Vec<JsonUser>;
+    fn update_user_information(
+        &mut self,
+        name: String,
+        avatar: Option<String>,
+        email: String,
+        phone: String,
+        description: String,
+    ) -> JsonUser;
 }

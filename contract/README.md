@@ -85,17 +85,17 @@ cargo make call delete_item '{"item_id": "item_Vinhome_central_park_thanhtung241
 ## create_auction
 
 ```
-cargo make call create_auction '{"item_id": 1, "auction_id": 1, "closed_at": 1690731834000}' --account-id thanhtung2410.testnet
+cargo make call create_auction '{"item_id": "item_Vinhome_central_park_thanhtung2410.testnet", "closed_at": 1690731834000, "floor_price": 0}' --account-id thanhtung2410.testnet
 ```
 
 ```
-cargo make call create_auction '{"item_id": 2, "auction_id": 2, "closed_at": 1690731834000}' --account-id test_auction_contract.testnet
+cargo make call create_auction '{"item_id": "item_Pi_test_auction_contract.testnet", "auction_id": 2, "closed_at": 1690731834000, "floor_price": 1}' --account-id test_auction_contract.testnet
 ```
 
 ## get_auction_metadata_by_auction_id
 
 ```
-cargo make view get_auction_metadata_by_auction_id '{"auction_id" : 1}'
+cargo make view get_auction_metadata_by_auction_id '{"auction_id" : "auction_Vinhome_central_park_thanhtung2410.testnet"}'
 ```
 
 ## delete_auction
@@ -107,11 +107,25 @@ cargo make call delete_auction '{"auction_id": 1}' --account-id thanhtung2410.te
 ## join_auction
 
 ```
-cargo make call join_auction '{"auction_id": 1}' --account-id test_auction_contract.testnet --amount 1
+cargo make call join_auction '{"auction_id": "auction_Vinhome_central_park_thanhtung2410.testnet"}' --account-id test_auction_contract.testnet --amount 1
+```
+
+```
+cargo make call join_auction '{"auction_id": "auction_Vinhome_central_park_thanhtung2410.testnet"}' --account-id auction_escrow_account.testnet --amount 1
 ```
 
 ## get_all_auctions
 
 ```
 cargo make view get_all_auctions
+```
+
+## get_user_bid_transaction_by_auction_id
+
+```
+cargo make view get_user_bid_transaction_by_auction_id '{"auction_id": "auction_Vinhome_central_park_thanhtung2410.testnet", "user_id": "test_auction_contract.testnet"}'
+```
+
+```
+cargo make view get_user_bid_transaction_by_auction_id '{"auction_id": "auction_Vinhome_central_park_thanhtung2410.testnet", "user_id": "auction_escrow_account.testnet"}'
 ```

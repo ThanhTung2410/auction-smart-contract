@@ -10,6 +10,7 @@ use crate::borsh::{self, BorshDeserialize, BorshSerialize};
 
 use super::{
     auction::{AuctionId, AuctionMetadata},
+    bid_transaction::BidTransaction,
     item::{ItemId, ItemMetadata},
     user::{JsonUser, UserId},
 };
@@ -50,12 +51,6 @@ pub struct AuctionContract {
     /// Metadata associated with the auction contract.
     pub metadata_contract: LazyOption<AuctionContractMetadata>,
 
-    /// Storage all user_id of participant users -> For count all of users in the system
-    pub participant_users: UnorderedSet<UserId>,
-
-    /// Storage all user_id of auctioneer users. -> For count all of auctioneers in the system
-    pub auctioneer_users: UnorderedSet<UserId>,
-
     /// Map of `JsonUser` metadata by user ID.
     pub user_metadata_by_id: LookupMap<UserId, JsonUser>,
 
@@ -63,7 +58,7 @@ pub struct AuctionContract {
     pub auctions_host_per_user: LookupMap<UserId, UnorderedSet<AuctionId>>,
 
     /// Map of auction join by user ID.
-    pub auctions_join_per_user: LookupMap<UserId, UnorderedSet<AuctionId>>,
+    pub auctions_join_per_user: LookupMap<UserId, UnorderedSet<BidTransaction>>,
 
     /// Map of item owned by user
     pub items_per_user: LookupMap<UserId, UnorderedSet<ItemId>>,
@@ -81,8 +76,6 @@ pub struct AuctionContract {
 #[derive(BorshSerialize)]
 pub enum ContractStorageKey {
     ContractMetadata,
-    ParticipantUsers,
-    AuctioneerUsers,
     UserMetadataById,
     ItemsPerUser,
     ItemMetadataById,

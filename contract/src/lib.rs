@@ -35,12 +35,6 @@ impl AuctionContract {
                 ContractStorageKey::ContractMetadata.try_to_vec().unwrap(),
                 Some(&metadata),
             ),
-            participant_users: UnorderedSet::new(
-                ContractStorageKey::ParticipantUsers.try_to_vec().unwrap(),
-            ),
-            auctioneer_users: UnorderedSet::new(
-                ContractStorageKey::AuctioneerUsers.try_to_vec().unwrap(),
-            ),
             auctions_host_per_user: LookupMap::new(
                 ContractStorageKey::AuctionsHostPerUser
                     .try_to_vec()

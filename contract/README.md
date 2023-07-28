@@ -37,6 +37,15 @@ cargo make call create_item '{"item_id": 1, "name": "Vinhome central park", "des
 ```
 cargo make call create_item '{"item_id": 2, "name": "Pi", "description": "Cong dong Pi lac quan", "media": "https://global-uploads.webflow.com/5fad86e2327507cecea2d5e8/644e2b0746017e63acb2f845_Pi%20Network%20Mobile%20Mining.jpg"}' --account-id test_auction_contract.testnet
 ```
+## update_item
+```
+cargo make call update_item '{"item_id":1, "name": "VinHome Central Park VIP", "description": "Khu can ho cao cap hoang gia", "media": "https://vinhomecentralpark.com/wp-content/uploads/2021/02/mat-bang-vinhomes-central-park.jpg"}' --account-id thanhtung2410.testnet    
+```
+
+```
+cargo make call update_item '{"item_id": 2, "name": "Pi", "description": "Cong dong Pi lac quan so mot Viet Nam", "media": "https://global-uploads.webflow.com/5fad86e2327507cecea2d5e8/644e2b0746017e63acb2f845_Pi%20Network%20Mobile%20Mining.jpg"}' --account-id thanhtung2410.testnet
+```
+
 
 ## get_item_metadata_by_item_id
 
@@ -95,3 +104,26 @@ cargo make view get_all_auctions
 ```
 cargo make call update_item '{"item_id": 1, "name": "Test update item", "media": "Test update item", "description": "Test update item"}' --account-id thanhtung2410.testnet
 ```
+
+## create user #2
+```
+cargo make call create_user '{"name": "Sang", "avatar": "None", "email": "abc@gmail.com", "phone": "091201", "description":"None"}' --account-id calocnuong.testnet
+```
+
+## update user information
+
+```
+cargo make call update_user_information '{"name": "Tran Phuoc Sang", "avatar": "None", "email": "transhack09@gmail.com", "phone": "0123456789", "description":"None"}' --account-id calocnuong.testnet                                                        
+```
+
+## update user role
+
+```
+cargo make call update_role '{"role":"Participant"}' --account-id calocnuong.testnet                                                  
+```
+
+## check user role
+
+```
+cargo make call check_user_role '{"user_id": "calocnuong.testnet"}' --account-id calocnuong.testnet          
+ ```

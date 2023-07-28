@@ -19,10 +19,6 @@ impl ImplAuction for AuctionContract {
         closed_at: u64,
 
         floor_price: Option<Balance>,
-
-        winner: Option<UserId>,
-
-        highest_bid: Option<Balance>,
     ) {
         let owner_id = env::signer_account_id();
         let auction = AuctionMetadata {
@@ -32,8 +28,8 @@ impl ImplAuction for AuctionContract {
             created_at: env::block_timestamp_ms(),
             closed_at,
             floor_price,
-            winner,
-            highest_bid,
+            winner: None,
+            highest_bid: None,
             users_join_auction: Set::new(),
         };
 

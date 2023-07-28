@@ -8,7 +8,12 @@ function Completionist() {
   return <span>The auction has ended</span>;
 }
 
-export default function CountdownTimer() {
+interface CountdownTimerProps {
+  timestamp: number;
+}
+
+export default function CountdownTimer(props: CountdownTimerProps) {
+  const { timestamp } = props;
   const renderer = ({ days, hours, minutes, seconds, completed }) => {
     if (completed) {
       // Render a completed state
@@ -45,7 +50,7 @@ export default function CountdownTimer() {
   return (
     <div>
       <Countdown
-        date={Date.now() + (1690731834000 - Date.now())}
+        date={timestamp}
         renderer={renderer}
         intervalDelay={0}
       />

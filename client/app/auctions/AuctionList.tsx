@@ -12,6 +12,7 @@ import {
 import { Auction } from "../@types/Auction.type";
 import Title from "../components/Title";
 import CountdownTimer from "../components/CountdownTimer/CountdownTimer";
+import Link from "next/link";
 
 const CONTRACT_ID = process.env.NEXT_PUBLIC_CONTRACT_NAME || "";
 
@@ -129,6 +130,16 @@ export default function AuctionList(props: AuctionListProps) {
   return (
     <>
       <Title name="List Auctions" />
+      <div>
+        <Link href="/auctions/add">
+          <button
+            className="bg-blue-500 hover:bg-blue-700 font-bold py-2 px-4 rounded text-white"
+            style={{ margin: "0 auto", display: "block" }}
+          >
+            Add auction
+          </button>
+        </Link>
+      </div>
       <Cards>
         {auctions.map((auction) => (
           <Card key={auction.auction_id}>
@@ -144,7 +155,7 @@ export default function AuctionList(props: AuctionListProps) {
               </Text>
             </div>
 
-            <CountdownTimer />
+            <CountdownTimer timestamp={auction.closed_at} />
 
             {account !== auction.host_id ? (
               <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">

@@ -41,10 +41,6 @@ pub trait ImplAuction {
         closed_at: u64,
 
         floor_price: Option<Balance>,
-
-        winner: Option<UserId>,
-
-        highest_bid: Option<Balance>,
     );
 
     fn get_all_auctions(&self) -> Vec<AuctionMetadata>;

@@ -157,25 +157,32 @@ export default function AuctionList(props: AuctionListProps) {
 
             <CountdownTimer timestamp={auction.closed_at} />
 
-            {account !== auction.host_id ? (
+            {account !== auction.host_id && (
               <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                 Auction
               </button>
-            ) : (
-              ""
             )}
 
-            {account === auction.host_id ? (
+            {account === auction.host_id && (
               <button
                 // onClick={() => {
                 //   startDeleteItem(item.item_id);
                 // }}
-                className="bg-red-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
               >
                 Delete
               </button>
-            ) : (
-              ""
+            )}
+
+            {account === auction.host_id && (
+              <button
+                // onClick={() => {
+                //   startDeleteItem(item.item_id);
+                // }}
+                className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+              >
+                Edit
+              </button>
             )}
           </Card>
         ))}

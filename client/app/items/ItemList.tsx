@@ -119,7 +119,7 @@ export default function ItemList(props: ItemListProps) {
       });
   };
 
-  const startDeleteItem = (itemId: number) => {
+  const startDeleteItem = (itemId: string) => {
     let itemFound = items.find((item) => item.item_id === itemId);
     if (itemFound) {
       setCurrentItem(itemFound);

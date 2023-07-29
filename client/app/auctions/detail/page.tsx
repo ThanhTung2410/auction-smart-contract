@@ -10,6 +10,8 @@ import {
   selectWallet,
 } from "@/features/walletSlice";
 import { Auction } from "@/app/@types/Auction.type";
+import { BidTransaction } from "@/app/@types/BidTransaction.type";
+import CountdownTimer from "@/app/components/CountdownTimer/CountdownTimer";
 
 const CONTRACT_ID = process.env.NEXT_PUBLIC_CONTRACT_NAME || "";
 
@@ -454,13 +456,19 @@ export default function page() {
   const wallet = useAppSelector(selectWallet);
   const account = useAppSelector(selectAccountId);
   const [bid, setBid] = useState<number>(0);
+  const [currentUserTransaction, setCurrentUserTransaction] =
+    useState<BidTransaction | null>(null);
+
+  const [transactionsOfAuction, setTransactionOfAuction] = useState<
+    BidTransaction[]
+  >([]);
   const [auction, setAuction] = useState<Auction | null>(null);
   const [walletReady, setWalletReady] = useState(false);
   const isLoading = useAppSelector(selectIsLoading);
 
   const searchParams = useSearchParams();
 
-  const id = parseInt(searchParams.get("id"));
+  const id = searchParams.get("id");
 
   useEffect(() => {
     if (!isLoading && wallet) {
@@ -479,6 +487,23 @@ export default function page() {
           },
         });
 
+        const transactionFound = await wallet.viewMethod({
+          contractId: CONTRACT_ID,
+          method: "get_user_bid_transaction_by_auction_id",
+          args: {
+            auction_id: id,
+            user_id: account,
+          },
+        });
+
+        const allTransactions = await wallet.viewMethod({
+          contractId: CONTRACT_ID,
+          method: "get_all_transaction_by_auction_id",
+          args: {
+            auction_id: id,
+          },
+        });
+
         const item = await wallet.viewMethod({
           contractId: CONTRACT_ID,
           method: "get_item_metadata_by_item_id",
@@ -492,8 +517,10 @@ export default function page() {
           item_metadata: item,
         };
 
-        await setAuction(newResult);
-        console.log(newResult);
+        setAuction(newResult);
+        setCurrentUserTransaction(transactionFound);
+        setTransactionOfAuction(allTransactions);
+        console.log(allTransactions);
       }
     };
     getData();
@@ -507,6 +534,7 @@ export default function page() {
     setWalletReady(false);
     e.preventDefault();
 
+    // just accept integer bid
     const tenPow24 = "000000000000000000000000";
     const bidInYoctoNear = bid + tenPow24;
 
@@ -598,11 +626,22 @@ export default function page() {
               </div>
               <div>
                 <PriceArea>
-                  <form onSubmit={changeMessage}>
-                    <label>Enter the amount you want to bid</label> (NEAR)
-                    <input type="number" value={bid} onChange={handleChange} />
-                    <button>Bid</button>
-                  </form>
+                  {auction?.host_id !== account && (
+                    <form onSubmit={changeMessage}>
+                      <p>
+                        {currentUserTransaction
+                          ? currentUserTransaction.total_bid
+                          : 0}
+                      </p>
+                      <label>Enter the amount you want to bid</label> (NEAR)
+                      <input
+                        type="number"
+                        value={bid}
+                        onChange={handleChange}
+                      />
+                      <button>Bid</button>
+                    </form>
+                  )}
 
                   {/* <h6>{price.toFixed(2)}</h6>
                   <span>
@@ -765,9 +804,14 @@ export default function page() {
                 {new Date(auction?.created_at).toLocaleString()}
               </MintDetails>
               <MintDetails>
-                <span>Updated at</span>
-                {new Date(auction?.updated_at).toLocaleString()}
+                <span>Closed at</span>
+                {new Date(auction?.closed_at).toLocaleString()}
               </MintDetails>
+              {auction?.closed_at && (
+                <div style={{ marginTop: "0.5rem" }}>
+                  <CountdownTimer timestamp={auction?.closed_at} />
+                </div>
+              )}
             </Description>
           </RightSection>
         </TopSection>
@@ -776,53 +820,21 @@ export default function page() {
         <TableHeader>
           <h1>Auction History</h1>
         </TableHeader>
-        {/* {props.state.singleNftProps.transactions ? (
-        props.state.singleNftProps.transactions.map((data) => (
-          <TableBody>
-            <RowType>{data.type}</RowType>
-            <a
-              href={`${
-                currentChain[props.state.singleNftProps.chain].explorer
-              }/tx/${data.txId || ""}`}
-              target="_blank"
-            >
-              <RowBody>
-                <span>From</span>
-                <p>
-                  {`${data.owner ? data.owner.id.slice(0, 4) : ".."}...${
-                    data.owner ? data.owner.id.slice(40) : "."
-                  }`}
-                </p>
-                <span>To</span>
-                <p>
-                  {`${data.to ? data.to.id.slice(0, 4) : ".."}...${
-                    data.to ? data.to.id.slice(40) : "."
-                  }`}
-                </p>
-                <p>{getFormatedTxDate(data.txDate || "1662436482")}</p>
-              </RowBody>
-            </a>
-          </TableBody>
-        ))
-      ) : (
-        <TableBody>
-          <RowType>Listing</RowType>
-          <a
-            href={`${currentChain[137].explorer}/tx/0x5edb90dfc01d8a50558fcbd55b33541204d8705f44dd19ce34752df4a53574d1`}
-            target="_blank"
-          >
-            <RowBody>
-              <span>From</span>
-              <p>---</p>
-              <span>To</span>
-              <p>
-                {defaultAddress.slice(0, 4)}
-                {"..."}
-                {defaultAddress.slice(38)}
-              </p>
-              <p>{getFormatedTxDate(data.txDate || "1662436482")}</p>
-            </RowBody>
-            </TableBody> */}
+        {transactionsOfAuction &&
+          transactionsOfAuction.map((transaction) => (
+            <TableBody key={transaction.owner_id}>
+              {/* <RowType>Listing</RowType> */}
+              <a>
+                <RowBody>
+                  <span>Account ID</span>
+                  <p>{transaction.owner_id}</p>
+                  <span>Bid</span>
+                  <p>{transaction.total_bid}</p>
+                  <p>{new Date(transaction.updated_at).toLocaleString()}</p>
+                </RowBody>
+              </a>
+            </TableBody>
+          ))}
       </TransactionTable>
     </Root>
   );

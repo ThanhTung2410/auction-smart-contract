@@ -2,7 +2,7 @@ import { Item } from "./Item.type";
 import { User } from "./User.type";
 
 export interface Auction {
-  auction_id: number;
+  auction_id: string;
   host_id: string;
   created_at: number;
   closed_at: number;
@@ -10,6 +10,6 @@ export interface Auction {
   winner: string;
   highest_bid: number;
   users_join_auction: User[];
-  item_id: number;
+  item_id: string;
   item_metadata: Item;
 }

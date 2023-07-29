@@ -17,7 +17,6 @@ export default function CountdownTimer(props: CountdownTimerProps) {
   const renderer = ({ days, hours, minutes, seconds, completed }) => {
     if (completed) {
       // Render a completed state
-      console.log(Date.now());
       return <Completionist />;
     } else {
       // Render a countdown

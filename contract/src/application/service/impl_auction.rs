@@ -36,7 +36,10 @@ impl ImplAuction for AuctionContract {
         let mut set_auction_user_host = self
             .auctions_host_per_user
             .get(&owner_id)
-            .or_else(|| Some(UnorderedSet::new(owner_id.clone().to_string().into_bytes())))
+            .or_else(|| {
+                let key = String::from("auctions_host_") + &owner_id.to_string();
+                Some(UnorderedSet::new(key.into_bytes()))
+            })
             .unwrap();
         set_auction_user_host.insert(&auction_id);
         self.auctions_host_per_user
@@ -74,7 +77,6 @@ impl ImplAuction for AuctionContract {
     }
 
     fn delete_auction(&mut self, auction_id: AuctionId) {
-        // self.auctions_host_per_user
         let owner_id = env::signer_account_id();
         let auction = self.auction_metadata_by_id.get(&auction_id).unwrap();
         assert_eq!(
@@ -83,6 +85,7 @@ impl ImplAuction for AuctionContract {
         );
         self.all_auctions.remove(&auction_id);
         self.auction_metadata_by_id.remove(&auction_id);
+        // self.auctions_host_per_user
     }
 
     #[payable]
@@ -95,7 +98,7 @@ impl ImplAuction for AuctionContract {
 
         let highest_bid = auction.highest_bid.or_else(|| auction.floor_price).unwrap();
 
-        let mut bid = env::attached_deposit() / ONE_NEAR;
+        let mut near_send = env::attached_deposit() / ONE_NEAR;
 
         let user_join_id = env::signer_account_id();
 
@@ -107,9 +110,8 @@ impl ImplAuction for AuctionContract {
             .transactions_per_user_have
             .get(&user_join_id)
             .or_else(|| {
-                Some(UnorderedSet::new(
-                    user_join_id.clone().to_string().into_bytes(),
-                ))
+                let key = String::from("transactions_") + &user_join_id.to_string();
+                Some(UnorderedSet::new(key.into_bytes()))
             })
             .unwrap();
 
@@ -118,18 +120,20 @@ impl ImplAuction for AuctionContract {
         });
 
         if !transaction_found.is_none() {
-            let tmp = transaction_found.unwrap(); // rename var
-            let mut update_transaction = tmp.clone();
-            let bid_clone = bid.clone(); // rename var
-            bid += update_transaction.total_bid; // correct
-            update_transaction.total_bid += bid_clone;
-            update_transaction.updated_at = env::block_timestamp_ms();
-            set_transactions_user_have.remove(&tmp);
-            set_transactions_user_have.insert(&update_transaction);
+            let old_transaction = transaction_found.unwrap();
+            let mut updated_transaction = old_transaction.clone();
+
+            let near_send_clone = near_send.clone();
+            near_send += updated_transaction.total_bid;
+            updated_transaction.total_bid += near_send_clone;
+            updated_transaction.updated_at = env::block_timestamp_ms();
+
+            set_transactions_user_have.remove(&old_transaction);
+            set_transactions_user_have.insert(&updated_transaction);
         } else {
             let bid_transaction = BidTransaction {
                 updated_at: env::block_timestamp_ms(),
-                total_bid: bid,
+                total_bid: near_send,
                 owner_id: user_join_id.clone(),
                 auction_id: auction_id.clone(),
             };
@@ -137,8 +141,9 @@ impl ImplAuction for AuctionContract {
         }
 
         // check condition
+        // near_send stands for both case in if statement above
         assert!(
-            bid > highest_bid,
+            near_send > highest_bid,
             "You need to pay more than the highest bid"
         );
         assert!(
@@ -150,7 +155,7 @@ impl ImplAuction for AuctionContract {
             .auctions_join_per_user
             .get(&auction_id)
             .or_else(|| {
-                let key = user_join_id.to_string() + "_" + &auction_id;
+                let key = String::from("users_join_") + &auction_id;
                 Some(UnorderedSet::new(key.into_bytes()))
             })
             .unwrap();
@@ -158,7 +163,7 @@ impl ImplAuction for AuctionContract {
         set_auctions_user_join.insert(&user_join_id);
 
         auction.winner = Some(env::signer_account_id());
-        auction.highest_bid = Some(bid);
+        auction.highest_bid = Some(near_send);
 
         self.auction_metadata_by_id.insert(&auction_id, &auction);
 

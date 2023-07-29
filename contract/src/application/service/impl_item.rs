@@ -40,7 +40,10 @@ impl ImplItem for AuctionContract {
         let mut set_items = self
             .items_per_user
             .get(&owner_id)
-            .or_else(|| Some(UnorderedSet::new(owner_id.clone().to_string().into_bytes()))) // convert string to byte string
+            .or_else(|| {
+                let key = String::from("items_") + &owner_id.to_string();
+                Some(UnorderedSet::new(key.into_bytes()))
+            }) // convert string to byte string
             .unwrap();
         set_items.insert(&item_id);
 
@@ -65,6 +68,9 @@ impl ImplItem for AuctionContract {
             return vec_items;
         }
         let items = self.items_per_user.get(&user_id).unwrap();
+        if items.is_empty() {
+            return vec_items;
+        }
         for item_id in items.iter() {
             let item_metadata = self.get_item_metadata_by_item_id(item_id).unwrap();
             vec_items.push(item_metadata);
@@ -102,10 +108,13 @@ impl ImplItem for AuctionContract {
     fn delete_item(&mut self, item_id: ItemId) -> ItemMetadata {
         let item_found = self.item_metadata_by_id.get(&item_id).unwrap();
         let owner_id = env::signer_account_id();
+
         let mut set_items = self.items_per_user.get(&owner_id).unwrap();
         set_items.remove(&item_id);
+
         self.items_per_user.insert(&owner_id, &set_items);
         self.item_metadata_by_id.remove(&item_id);
+
         item_found
     }
 }

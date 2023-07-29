@@ -101,7 +101,7 @@ cargo make view get_auction_metadata_by_auction_id '{"auction_id" : "auction_Vin
 ## delete_auction
 
 ```
-cargo make call delete_auction '{"auction_id": 1}' --account-id thanhtung2410.testnet
+cargo make call delete_auction '{"auction_id": "auction_Vinhome_central_park_thanhtung2410.testnet"}' --account-id thanhtung2410.testnet
 ```
 
 ## join_auction
@@ -134,4 +134,16 @@ cargo make view get_user_bid_transaction_by_auction_id '{"auction_id": "auction_
 
 ```
 cargo make view get_all_transaction_by_auction_id '{"auction_id": "auction_Vinhome_central_park_thanhtung2410.testnet"}'
+```
+
+## finish_auction
+
+```
+cargo make call finish_auction '{"auction_id": "auction_Vinhome_central_park_thanhtung2410.testnet"}' --account-id thanhtung2410.testnet --amount 2
+```
+
+## get_sum_total_bid_transactions_of_auction
+
+```
+cargo make view get_sum_total_bid_transactions_of_auction '{"auction_id": "auction_Vinhome_central_park_thanhtung2410.testnet"}'
 ```

@@ -27,6 +27,8 @@ pub struct AuctionMetadata {
     pub highest_bid: Option<Balance>,
 
     pub item_id: ItemId,
+
+    pub is_finish: bool,
 }
 
 pub trait ImplAuction {
@@ -65,4 +67,8 @@ pub trait ImplAuction {
     ) -> Option<BidTransaction>;
 
     fn get_all_transaction_by_auction_id(&self, auction_id: AuctionId) -> Vec<BidTransaction>;
+
+    fn finish_auction(&mut self, auction_id: AuctionId);
+
+    fn get_sum_total_bid_transactions_of_auction(&self, auction_id: AuctionId) -> u128;
 }

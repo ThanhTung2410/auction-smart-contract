@@ -1,11 +1,10 @@
 use crate::models::auction::{self, AuctionId, AuctionMetadata};
 use crate::models::bid_transaction::BidTransaction;
 use crate::models::contract::AuctionContractExt;
-use crate::models::item::{self, ItemId};
+use crate::models::item::ItemId;
 use crate::models::user::UserId;
 use crate::models::{auction::ImplAuction, contract::AuctionContract};
-use near_sdk::__private::schemars::Set;
-use near_sdk::collections::{LookupMap, UnorderedSet};
+use near_sdk::collections::UnorderedSet;
 use near_sdk::{env, near_bindgen, Balance, Promise, ONE_NEAR};
 
 fn convert_to_auction_id(host: UserId, item_name: String) -> String {
@@ -31,6 +30,7 @@ impl ImplAuction for AuctionContract {
             floor_price,
             winner: None,
             highest_bid: None,
+            is_finish: false,
         };
 
         let mut set_auction_user_host = self
@@ -47,6 +47,9 @@ impl ImplAuction for AuctionContract {
 
     fn get_all_auctions(&self) -> Vec<AuctionMetadata> {
         let mut result = Vec::new();
+        if self.all_auctions.is_empty() {
+            return result;
+        }
         for auction_id in self.all_auctions.iter() {
             result.push(self.get_auction_metadata_by_auction_id(auction_id).unwrap());
         }
@@ -78,6 +81,7 @@ impl ImplAuction for AuctionContract {
             owner_id, auction.host_id,
             "You do not have permission to delete"
         );
+        self.all_auctions.remove(&auction_id);
         self.auction_metadata_by_id.remove(&auction_id);
     }
 
@@ -86,6 +90,8 @@ impl ImplAuction for AuctionContract {
         let mut auction = self
             .get_auction_metadata_by_auction_id(auction_id.clone())
             .unwrap();
+
+        assert!(!auction.is_finish, "The auction had finished");
 
         let highest_bid = auction.highest_bid.or_else(|| auction.floor_price).unwrap();
 
@@ -182,7 +188,13 @@ impl ImplAuction for AuctionContract {
 
     fn get_all_transaction_by_auction_id(&self, auction_id: AuctionId) -> Vec<BidTransaction> {
         let mut result = Vec::new();
+        if self.auctions_join_per_user.get(&auction_id).is_none() {
+            return result;
+        }
         let set_user_join_this_auction = self.auctions_join_per_user.get(&auction_id).unwrap();
+        if set_user_join_this_auction.is_empty() {
+            return result;
+        }
         for user_id in set_user_join_this_auction.iter() {
             result.push(
                 self.get_user_bid_transaction_by_auction_id(auction_id.clone(), user_id)
@@ -190,5 +202,45 @@ impl ImplAuction for AuctionContract {
             )
         }
         result
+    }
+
+    // except the winner
+    fn get_sum_total_bid_transactions_of_auction(&self, auction_id: AuctionId) -> u128 {
+        let auction = self
+            .get_auction_metadata_by_auction_id(auction_id.clone())
+            .unwrap();
+        let transactions = self.get_all_transaction_by_auction_id(auction_id.clone());
+        transactions
+            .iter()
+            .filter(|transaction| transaction.owner_id != *auction.winner.as_ref().unwrap())
+            .fold(0, |acc, transaction| acc + transaction.total_bid)
+    }
+
+    // send back money to others after auction finish & change the owner of item to the winner
+    #[payable]
+    fn finish_auction(&mut self, auction_id: AuctionId) {
+        // update auction
+        let mut auction = self
+            .get_auction_metadata_by_auction_id(auction_id.clone())
+            .unwrap();
+
+        assert!(!auction.is_finish, "The auction had finished");
+
+        auction.is_finish = true;
+        self.auction_metadata_by_id.insert(&auction_id, &auction);
+
+        // update owner_item
+        let mut item = self.item_metadata_by_id.get(&auction.item_id).unwrap();
+        item.owner_id = auction.winner.unwrap();
+        self.item_metadata_by_id.insert(&item.item_id, &item);
+
+        // send back money
+        let transactions = self.get_all_transaction_by_auction_id(auction_id.clone());
+        for transaction in transactions.iter() {
+            if transaction.owner_id != auction.host_id {
+                Promise::new(transaction.owner_id.clone())
+                    .transfer(transaction.total_bid.clone() * ONE_NEAR);
+            }
+        }
     }
 }

@@ -129,3 +129,9 @@ cargo make view get_user_bid_transaction_by_auction_id '{"auction_id": "auction_
 ```
 cargo make view get_user_bid_transaction_by_auction_id '{"auction_id": "auction_Vinhome_central_park_thanhtung2410.testnet", "user_id": "auction_escrow_account.testnet"}'
 ```
+
+## get_all_transaction_by_auction_id
+
+```
+cargo make view get_all_transaction_by_auction_id '{"auction_id": "auction_Vinhome_central_park_thanhtung2410.testnet"}'
+```

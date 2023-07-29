@@ -1,5 +1,5 @@
 use near_sdk::{
-    collections::{LazyOption, LookupMap, UnorderedSet},
+    collections::{LazyOption, LookupMap, UnorderedMap, UnorderedSet},
     json_types::Base64VecU8,
     near_bindgen,
     serde::{Deserialize, Serialize},
@@ -57,8 +57,10 @@ pub struct AuctionContract {
     /// Map of auction host by user ID.
     pub auctions_host_per_user: LookupMap<UserId, UnorderedSet<AuctionId>>,
 
-    /// Map of auction join by user ID.
-    pub auctions_join_per_user: LookupMap<UserId, UnorderedSet<BidTransaction>>,
+    pub transactions_per_user_have: LookupMap<UserId, UnorderedSet<BidTransaction>>,
+
+    /// Map of user join auction by auction ID.
+    pub auctions_join_per_user: UnorderedMap<AuctionId, UnorderedSet<UserId>>,
 
     /// Map of item owned by user
     pub items_per_user: LookupMap<UserId, UnorderedSet<ItemId>>,
@@ -81,6 +83,7 @@ pub enum ContractStorageKey {
     ItemMetadataById,
     AuctionsHostPerUser,
     AuctionsJoinPerUser,
+    TransactionPerUserHave,
     AuctionMetadataById,
     AllAuctions,
 }

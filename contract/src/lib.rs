@@ -5,7 +5,7 @@ use crate::models::contract::AuctionContractExt;
 use models::contract::{AuctionContract, AuctionContractMetadata, ContractStorageKey};
 use models::user::UserId;
 use near_sdk::borsh::{self, BorshSerialize};
-use near_sdk::collections::{LazyOption, LookupMap, UnorderedSet};
+use near_sdk::collections::{LazyOption, LookupMap, UnorderedMap, UnorderedSet};
 use near_sdk::{env, near_bindgen};
 
 #[near_bindgen]
@@ -40,7 +40,12 @@ impl AuctionContract {
                     .try_to_vec()
                     .unwrap(),
             ),
-            auctions_join_per_user: LookupMap::new(
+            transactions_per_user_have: LookupMap::new(
+                ContractStorageKey::TransactionPerUserHave
+                    .try_to_vec()
+                    .unwrap(),
+            ),
+            auctions_join_per_user: UnorderedMap::new(
                 ContractStorageKey::AuctionsJoinPerUser
                     .try_to_vec()
                     .unwrap(),

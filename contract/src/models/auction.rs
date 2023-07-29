@@ -63,4 +63,6 @@ pub trait ImplAuction {
         auction_id: AuctionId,
         user_id: UserId,
     ) -> Option<BidTransaction>;
+
+    fn get_all_transaction_by_auction_id(&self, auction_id: AuctionId) -> Vec<BidTransaction>;
 }

@@ -98,7 +98,7 @@ impl ImplAuction for AuctionContract {
 
         // same to set auctions user join
         let mut set_transactions_user_have = self
-            .auctions_join_per_user
+            .transactions_per_user_have
             .get(&user_join_id)
             .or_else(|| {
                 Some(UnorderedSet::new(
@@ -140,13 +140,27 @@ impl ImplAuction for AuctionContract {
             "The auction is closed"
         );
 
+        let mut set_auctions_user_join = self
+            .auctions_join_per_user
+            .get(&auction_id)
+            .or_else(|| {
+                let key = user_join_id.to_string() + "_" + &auction_id;
+                Some(UnorderedSet::new(key.into_bytes()))
+            })
+            .unwrap();
+
+        set_auctions_user_join.insert(&user_join_id);
+
         auction.winner = Some(env::signer_account_id());
         auction.highest_bid = Some(bid);
 
         self.auction_metadata_by_id.insert(&auction_id, &auction);
 
-        self.auctions_join_per_user
+        self.transactions_per_user_have
             .insert(&env::signer_account_id(), &set_transactions_user_have);
+
+        self.auctions_join_per_user
+            .insert(&auction_id, &set_auctions_user_join);
 
         Promise::new(auction.host_id).transfer(env::attached_deposit());
     }
@@ -156,7 +170,7 @@ impl ImplAuction for AuctionContract {
         auction_id: AuctionId,
         user_id: UserId,
     ) -> Option<BidTransaction> {
-        if let Some(set_transactions_user_have) = self.auctions_join_per_user.get(&user_id) {
+        if let Some(set_transactions_user_have) = self.transactions_per_user_have.get(&user_id) {
             for transaction in set_transactions_user_have.iter() {
                 if transaction.owner_id == user_id && transaction.auction_id == auction_id {
                     return Some(transaction);
@@ -164,5 +178,17 @@ impl ImplAuction for AuctionContract {
             }
         }
         None
+    }
+
+    fn get_all_transaction_by_auction_id(&self, auction_id: AuctionId) -> Vec<BidTransaction> {
+        let mut result = Vec::new();
+        let set_user_join_this_auction = self.auctions_join_per_user.get(&auction_id).unwrap();
+        for user_id in set_user_join_this_auction.iter() {
+            result.push(
+                self.get_user_bid_transaction_by_auction_id(auction_id.clone(), user_id)
+                    .unwrap(),
+            )
+        }
+        result
     }
 }

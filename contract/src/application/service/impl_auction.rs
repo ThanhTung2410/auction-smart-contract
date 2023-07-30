@@ -21,6 +21,7 @@ impl ImplAuction for AuctionContract {
         let owner_id = env::signer_account_id();
         let item = self.item_metadata_by_id.get(&item_id).unwrap();
         let auction_id = convert_to_auction_id(owner_id.clone(), item.name);
+
         let auction = AuctionMetadata {
             item_id,
             auction_id: auction_id.clone(),
@@ -42,6 +43,7 @@ impl ImplAuction for AuctionContract {
             })
             .unwrap();
         set_auction_user_host.insert(&auction_id);
+
         self.auctions_host_per_user
             .insert(&owner_id, &set_auction_user_host);
         self.auction_metadata_by_id.insert(&auction_id, &auction);
@@ -85,7 +87,10 @@ impl ImplAuction for AuctionContract {
         );
         self.all_auctions.remove(&auction_id);
         self.auction_metadata_by_id.remove(&auction_id);
-        // self.auctions_host_per_user
+        let mut set_auctions_user_host = self.auctions_host_per_user.get(&owner_id).unwrap();
+        set_auctions_user_host.remove(&auction_id);
+        self.auctions_host_per_user
+            .insert(&owner_id, &set_auctions_user_host);
     }
 
     #[payable]
@@ -209,18 +214,6 @@ impl ImplAuction for AuctionContract {
         result
     }
 
-    // except the winner
-    fn get_sum_total_bid_transactions_of_auction(&self, auction_id: AuctionId) -> u128 {
-        let auction = self
-            .get_auction_metadata_by_auction_id(auction_id.clone())
-            .unwrap();
-        let transactions = self.get_all_transaction_by_auction_id(auction_id.clone());
-        transactions
-            .iter()
-            .filter(|transaction| transaction.owner_id != *auction.winner.as_ref().unwrap())
-            .fold(0, |acc, transaction| acc + transaction.total_bid)
-    }
-
     // send back money to others after auction finish & change the owner of item to the winner
     #[payable]
     fn finish_auction(&mut self, auction_id: AuctionId) {
@@ -229,7 +222,7 @@ impl ImplAuction for AuctionContract {
             .get_auction_metadata_by_auction_id(auction_id.clone())
             .unwrap();
 
-        // assert!(!auction.is_finish, "The auction had finished");
+        assert!(!auction.is_finish, "The auction had finished");
 
         auction.is_finish = true;
         self.auction_metadata_by_id.insert(&auction_id, &auction);

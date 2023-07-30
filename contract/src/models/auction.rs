@@ -37,7 +37,7 @@ pub trait ImplAuction {
 
     fn get_all_auctions(&self) -> Vec<AuctionMetadata>;
 
-    /// Get all auctions per user
+    /// Get all auctions user host
     fn get_all_auctions_host_per_user(
         &self,
         user_id: UserId,
@@ -61,6 +61,4 @@ pub trait ImplAuction {
     fn get_all_transaction_by_auction_id(&self, auction_id: AuctionId) -> Vec<BidTransaction>;
 
     fn finish_auction(&mut self, auction_id: AuctionId);
-
-    fn get_sum_total_bid_transactions_of_auction(&self, auction_id: AuctionId) -> u128;
 }

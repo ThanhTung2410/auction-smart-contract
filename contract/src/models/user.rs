@@ -16,11 +16,11 @@ pub struct UserMetadata {
 
     pub avatar: Option<String>,
 
-    pub email: String,
+    pub email: Option<String>,
 
-    pub phone: String,
+    pub phone: Option<String>,
 
-    pub description: String,
+    pub description: Option<String>,
 }
 
 #[derive(BorshDeserialize, BorshSerialize, Deserialize, Serialize)]
@@ -56,11 +56,11 @@ pub trait ImplUser {
 
         avatar: Option<String>,
 
-        email: String,
+        email: Option<String>,
 
-        phone: String,
+        phone: Option<String>,
 
-        description: String,
+        description: Option<String>,
     );
 
     /// Returns a `JsonUser` representation of the user's metadata for the given user ID.
@@ -71,8 +71,8 @@ pub trait ImplUser {
         &mut self,
         name: String,
         avatar: Option<String>,
-        email: String,
-        phone: String,
-        description: String,
+        email: Option<String>,
+        phone: Option<String>,
+        description: Option<String>,
     ) -> JsonUser;
 }

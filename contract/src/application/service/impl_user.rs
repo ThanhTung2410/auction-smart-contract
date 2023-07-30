@@ -10,9 +10,9 @@ impl ImplUser for AuctionContract {
         &mut self,
         name: String,
         avatar: Option<String>,
-        email: String,
-        phone: String,
-        description: String,
+        email: Option<String>,
+        phone: Option<String>,
+        description: Option<String>,
     ) {
         let owner_id = env::signer_account_id();
         assert!(
@@ -45,9 +45,9 @@ impl ImplUser for AuctionContract {
         &mut self,
         name: String,
         avatar: Option<String>,
-        email: String,
-        phone: String,
-        description: String,
+        email: Option<String>,
+        phone: Option<String>,
+        description: Option<String>,
     ) -> crate::models::user::JsonUser {
         let owner_id = env::signer_account_id();
 

@@ -122,7 +122,7 @@ const FormEdit = () => {
 
   const searchParams = useSearchParams();
 
-  const id = parseInt(searchParams.get("id"));
+  const id = searchParams.get("id");
 
   useEffect(() => {
     if (!isLoading && wallet) {

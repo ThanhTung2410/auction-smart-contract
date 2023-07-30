@@ -1,6 +1,5 @@
 "use client";
 
-import { Item } from "@/app/@types/Item.type";
 import { useAppSelector } from "@/context/store";
 import {
   selectAccountId,
@@ -112,10 +111,11 @@ const Form = () => {
   const wallet = useAppSelector(selectWallet);
   const account = useAppSelector(selectAccountId);
   const [walletReady, setWalletReady] = useState(false);
+  const isLoading = useAppSelector(selectIsLoading);
+
   const [name, setName] = useState<string>("");
   const [media, setMedia] = useState<string>("");
   const [description, setDescription] = useState<string>("");
-  const isLoading = useAppSelector(selectIsLoading);
 
   useEffect(() => {
     if (!isLoading && wallet) {
@@ -123,7 +123,7 @@ const Form = () => {
     }
   }, [isLoading, wallet]);
 
-  const changeMessage = async (e: any) => {
+  const createItem = async (e: any) => {
     if (!wallet) {
       console.error("Wallet is not initialized");
       return;
@@ -139,7 +139,7 @@ const Form = () => {
         gas: "300000000000000",
       })
       .then(() => setWalletReady(true))
-      .then(() => (window.location.href = "/app/page.tsx"));
+      .then(() => window.location.reload());
   };
 
   const handleChange = (setState: any) => (event: any) => {
@@ -151,7 +151,7 @@ const Form = () => {
       <div style={styles.formwrap}>
         <div style={styles.pagename}>Add item</div>
 
-        <form style={styles.contentdiv} onSubmit={changeMessage}>
+        <form style={styles.contentdiv} onSubmit={createItem}>
           <div style={styles.formrow}>
             <label>Name</label>
             <input

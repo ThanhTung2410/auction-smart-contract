@@ -14,7 +14,7 @@ import { Item } from "@/app/@types/Item.type";
 const CONTRACT_ID = process.env.NEXT_PUBLIC_CONTRACT_NAME || "";
 
 const Root = styled.div`
-  color: black; // hard code
+  color: black;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -61,36 +61,6 @@ const TopImageContainer = styled.div`
 
 const HeaderText = styled.h1`
   font-size: 1.5rem;
-`;
-
-const PriceArea = styled.div`
-  display: flex;
-  align-items: center;
-  color: #0d99ff;
-  & > * {
-    margin: 0px;
-    padding: 0px;
-  }
-  & > h6 {
-    font-weight: 700;
-    margin-left: 5px;
-    margin-top: 4px;
-    margin-right: 3px;
-    font-size: 1.3rem;
-  }
-  & > span {
-    font-size: 1.2rem;
-    margin: 0px;
-  }
-`;
-
-const PriceBucket = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: flex-end;
-  justify-content: space-between;
-  margin-top: 30px;
-  width: 100%;
 `;
 
 const RightSection = styled.div`
@@ -169,55 +139,6 @@ const TableHeader = styled.div`
   }
 `;
 
-const TableBody = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  padding: 0.5em;
-  justify-content: space-between;
-  border-bottom: 1px solid #dde1e6;
-  a {
-    cursor: pointer;
-    text-decoration: none;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    margin-top: 10px;
-    padding-left: 7px;
-    flex-wrap: wrap;
-    width: 100%;
-    justify-content: space-between;
-    span {
-      font-size: 12px;
-    }
-  }
-`;
-
-const RowType = styled.div`
-  display: inline-flex;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 0.5em;
-  font-size: 0.75rem;
-  padding: 0.25em 1em;
-  border-radius: 0.7em;
-  border: 1px solid #a4a9b6;
-`;
-
-const RowBody = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  margin-top: 10px;
-  padding-left: 7px;
-  flex-wrap: wrap;
-  width: 100%;
-  justify-content: space-between;
-  span {
-    font-size: 12px;
-  }
-`;
-
 const MintDetails = styled.div`
   display: flex;
   flex-direction: row;
@@ -230,51 +151,6 @@ const MintDetails = styled.div`
   & > a {
     cursor: pointer;
   }
-`;
-
-const Popup = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  backdrop-filter: blur(5px); /* Apply background blur */
-`;
-
-const PopupContent = styled.div`
-  background-color: #fff;
-  padding: 20px;
-  border-radius: 5px;
-  align-items: center;
-  max-width: 350px;
-  display: flex;
-  justify-content: center;
-  width: 100%;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-`;
-
-const Input = styled.input`
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 16px;
-`;
-
-const Button = styled.button`
-  background-color: #0d99ff;
-  color: white;
-  padding: 5px 15px;
-  border: none;
-  margin-top: 20px;
-  margin-right: 10px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 16px;
 `;
 
 const CloseNFT = styled.div`
@@ -315,147 +191,13 @@ const MarketplaceListed = styled.div`
   }
 `;
 
-// const getUsdValue = (price) => {
-//   const res = fetch(
-//     `https://api.coingecko.com/api/v3/simple/price?ids=${
-//       currentChain[props.state.singleNftProps.chain].livePrice
-//     }&vs_currencies=usd`
-//   );
-//   if (res.ok) {
-//     const multiplyBy = Object.values(res?.body)[0]?.usd;
-//     const value = multiplyBy * price.toFixed(2);
-//     console.log(value.toFixed(4));
-//     return value.toFixed(4) !== "NaN" ? value.toFixed(4) : 0;
-//   }
-// };
-
-// const handleBuyClick = () => {
-//   const contract = new ethers.Contract(
-//     currentChain[props.state.singleNftProps.chain].contract,
-//     listAbi,
-//     Ethers.provider().getSigner()
-//   );
-
-//   const nftContract = props.state.singleNftProps.id.split(
-//     props.state.singleNftProps.tokenId
-//   )[0];
-
-//   console.log("trying to buy oo");
-//   console.log(
-//     "variab;es",
-//     currentChain[props.state.singleNftProps.chain].contract,
-//     nftContract,
-//     contract
-//   );
-
-//   contract
-//     .nftSale(
-//       props.state.singleNftProps.price,
-//       props.state.singleNftProps.tokenId,
-//       props.state.singleNftProps.owner,
-//       nftContract,
-//       { value: props.state.singleNftProps.price }
-//     )
-//     .then((transactionHash) => transactionHash.wait())
-//     .then((ricit) => {
-//       console.log("does not get hiere", ricit);
-//       State.update({
-//         message: true,
-//         text: `${currentChain[props.state.singleNftProps.chain].explorer}/tx/${
-//           ricit.transactionHash
-//         }`,
-//       });
-//       props.handleCloseNft();
-//     })
-//     .catch((err) => {
-//       State.update({
-//         error: true,
-//         text: err.reason,
-//       });
-//     });
-// };
-
-// const handleSendClick = () => {
-//   // Handle the send button click event
-//   console.log("Input value:", state.listingPrice, Number(state.listingPrice));
-//   console.log(
-//     "Input value:",
-//     Ethers.provider().getSigner(),
-//     currentChain[props.state.singleNftProps.chain].contract
-//   );
-//   const contract = new ethers.Contract(
-//     currentChain[props.state.singleNftProps.chain].contract,
-//     listAbi,
-//     Ethers.provider().getSigner()
-//   );
-//   console.log("Formed thee", contract);
-//   const nftContract = props.state.singleNftProps.id.split(
-//     props.state.singleNftProps.tokenId
-//   )[0];
-
-//   console.log(
-//     "Logged Thee",
-//     nftContract,
-//     props.state.singleNftProps.tokenId,
-//     (Number(state.listingPrice) * 1e18).toString()
-//   );
-
-//   contract
-//     .createMarketplaceItem(
-//       nftContract,
-//       props.state.singleNftProps.tokenId,
-//       (Number(state.listingPrice) * 1e18).toString(),
-//       "General",
-//       "0xB4bE310666D2f909789Fb1a2FD09a9bEB0Edd99D"
-//     )
-//     .then((transactionHash) => transactionHash.wait())
-//     .then((ricit) => {
-//       console.log("does not get hiere", ricit);
-//       State.update({
-//         isOpen: false,
-//         message: true,
-//         text: `${currentChain[props.state.singleNftProps.chain].explorer}/tx/${
-//           ricit.transactionHash
-//         }`,
-//       });
-//     })
-//     .catch((err) => {
-//       console.log("erro stuffs, baffles me", err);
-//       State.update({
-//         isOpen: false,
-//         error: true,
-//         text: err.reason,
-//       });
-//     });
-// };
-
-// const handleListing = () => {
-//   State.update({
-//     isOpen: true,
-//   });
-// };
-
-// const handleInputChange = (e) => {
-//   console.log("updator", e.target.value);
-//   State.update({
-//     listingPrice: e.target.value,
-//   });
-// };
-
-// const price = props.state.singleNftProps.price
-//   ? props.state.singleNftProps.price * PRICE_CONVERSION_VALUE
-//   : 0;
-
-// const handleClose = () => {
-//   props.isNFTButtonClicked = false;
-// };
-
 export default function page() {
   const wallet = useAppSelector(selectWallet);
   const account = useAppSelector(selectAccountId);
-  const [item, setItem] = useState<Item | null>(null);
   const [walletReady, setWalletready] = useState(false);
   const isLoading = useAppSelector(selectIsLoading);
+
+  const [item, setItem] = useState<Item | null>(null);
 
   const searchParams = useSearchParams();
 
@@ -487,9 +229,7 @@ export default function page() {
     <Root>
       <MainContainer>
         <TopSection>
-          <CloseNFT
-          //   onClick={() => props.handleCloseNft()}
-          >
+          <CloseNFT>
             <img
               src="https://cdn-icons-png.flaticon.com/256/109/109618.png"
               alt=""
@@ -499,7 +239,6 @@ export default function page() {
             <HeaderText>{item?.name}</HeaderText>
             <img
               src={item?.media}
-              alt="NFT"
               width="100%"
               height="100%"
               className="rounded-3"
@@ -526,14 +265,6 @@ export default function page() {
             </div>
           </TopImageContainer>
           <RightSection>
-            {/* {state.error && (
-              <span style={{ color: state.colour || "red" }}>{state.text}</span>
-            )} */}
-            {/* {state.message && (
-              <a href={`${state.text}`} target="_blank">
-                View Transaction
-              </a>
-            )} */}
             <Description>
               <h6>Description</h6>
               <span>{item?.description}</span>
@@ -541,7 +272,7 @@ export default function page() {
             <Description>
               <h6>Attributes</h6>
 
-              {/* test */}
+              {/* later */}
               <AttributeContainer>
                 <Attribute>
                   <div>
@@ -579,58 +310,6 @@ export default function page() {
           </RightSection>
         </TopSection>
       </MainContainer>
-      <TransactionTable>
-        <TableHeader>
-          <h1>Auction History</h1>
-        </TableHeader>
-        {/* {props.state.singleNftProps.transactions ? (
-        props.state.singleNftProps.transactions.map((data) => (
-          <TableBody>
-            <RowType>{data.type}</RowType>
-            <a
-              href={`${
-                currentChain[props.state.singleNftProps.chain].explorer
-              }/tx/${data.txId || ""}`}
-              target="_blank"
-            >
-              <RowBody>
-                <span>From</span>
-                <p>
-                  {`${data.owner ? data.owner.id.slice(0, 4) : ".."}...${
-                    data.owner ? data.owner.id.slice(40) : "."
-                  }`}
-                </p>
-                <span>To</span>
-                <p>
-                  {`${data.to ? data.to.id.slice(0, 4) : ".."}...${
-                    data.to ? data.to.id.slice(40) : "."
-                  }`}
-                </p>
-                <p>{getFormatedTxDate(data.txDate || "1662436482")}</p>
-              </RowBody>
-            </a>
-          </TableBody>
-        ))
-      ) : (
-        <TableBody>
-          <RowType>Listing</RowType>
-          <a
-            href={`${currentChain[137].explorer}/tx/0x5edb90dfc01d8a50558fcbd55b33541204d8705f44dd19ce34752df4a53574d1`}
-            target="_blank"
-          >
-            <RowBody>
-              <span>From</span>
-              <p>---</p>
-              <span>To</span>
-              <p>
-                {defaultAddress.slice(0, 4)}
-                {"..."}
-                {defaultAddress.slice(38)}
-              </p>
-              <p>{getFormatedTxDate(data.txDate || "1662436482")}</p>
-            </RowBody>
-            </TableBody> */}
-      </TransactionTable>
     </Root>
   );
 }

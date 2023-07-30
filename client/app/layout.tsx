@@ -4,8 +4,8 @@ import "./globals.css";
 import Header from "./Header";
 
 export const metadata = {
-  title: "Create Near App - Eamon Version",
-  description: "Create Near App - Eamon Version",
+  title: "Auction Smart Contract",
+  description: "Auction Smart Contract",
 };
 
 export default function RootLayout({

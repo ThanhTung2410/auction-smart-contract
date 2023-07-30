@@ -1,8 +1,7 @@
 "use client";
 
-import { Item } from "@/app/@types/Item.type";
 import { useAppSelector } from "@/context/store";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import {
   selectAccountId,
   selectIsLoading,
@@ -112,13 +111,13 @@ const styles = {
 const FormEdit = () => {
   const wallet = useAppSelector(selectWallet);
   const account = useAppSelector(selectAccountId);
-  const item = null;
 
   const [walletReady, setWalletReady] = useState(false);
+  const isLoading = useAppSelector(selectIsLoading);
+  
   const [name, setName] = useState<string>("");
   const [media, setMedia] = useState<string>("");
   const [description, setDescription] = useState<string>("");
-  const isLoading = useAppSelector(selectIsLoading);
 
   const searchParams = useSearchParams();
 
@@ -149,7 +148,7 @@ const FormEdit = () => {
     getData();
   }, [walletReady]);
 
-  const changeMessage = async (e: any) => {
+  const updateItem = async (e: any) => {
     if (!wallet) {
       console.error("Wallet is not initialized");
       return;
@@ -165,7 +164,7 @@ const FormEdit = () => {
         gas: "300000000000000",
       })
       .then(() => setWalletReady(true))
-      .then(() => (window.location.href = "/app/page.tsx"));
+      .then(() => window.location.reload());
   };
 
   const handleChange = (setState: any) => (event: any) => {
@@ -177,7 +176,7 @@ const FormEdit = () => {
       <div style={styles.formwrap}>
         <div style={styles.pagename}>Edit item</div>
 
-        <form style={styles.contentdiv} onSubmit={changeMessage}>
+        <form style={styles.contentdiv} onSubmit={updateItem}>
           <div style={styles.formrow}>
             <label>Name</label>
             <input

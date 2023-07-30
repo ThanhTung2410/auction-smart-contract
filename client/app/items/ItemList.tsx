@@ -142,7 +142,13 @@ export default function ItemList(props: ItemListProps) {
           </button>
         </Link>
       </div>
-
+      {items.length === 0 && (
+        <div style={{ textAlign: "center" }}>
+          <h1 style={{ color: "black", marginTop: "1rem" }}>
+            You do not have any items
+          </h1>
+        </div>
+      )}
       <Cards>
         {items.map((item) => (
           <Card key={item.item_id}>

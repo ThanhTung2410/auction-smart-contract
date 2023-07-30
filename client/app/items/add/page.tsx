@@ -135,7 +135,7 @@ const Form = () => {
       .callMethod({
         contractId: CONTRACT_ID,
         method: "create_item",
-        args: { item_id: 6, name, media, description }, // id hard code just for text
+        args: { name, media, description },
         gas: "300000000000000",
       })
       .then(() => setWalletReady(true))

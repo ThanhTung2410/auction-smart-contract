@@ -1,20 +1,26 @@
-use near_sdk::__private::schemars::Set;
+use std::collections::HashMap;
+
 use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
 use near_sdk::serde::{Deserialize, Serialize};
 use near_sdk::Balance;
 
-use super::auction::AuctionId;
+pub type JointAuctionId = String;
+
 use super::bid_transaction::BidTransaction;
 use super::{item::ItemId, user::UserId};
 
-pub struct Collab {}
+#[derive(BorshDeserialize, BorshSerialize, Serialize, Deserialize, Debug)]
+#[serde(crate = "near_sdk::serde")]
+pub struct Pool {
+    pub map: HashMap<UserId, bool>,
+}
 
 #[derive(BorshDeserialize, BorshSerialize, Deserialize, Serialize, Debug)]
 #[serde(crate = "near_sdk::serde")]
 pub struct JointAuctionMetadata {
-    pub auction_id: AuctionId,
+    pub joint_auction_id: JointAuctionId,
 
-    pub host_id: Set<UserId>,
+    pub set_host_id: Vec<UserId>, // can get from the Pool
 
     /// timestamp
     pub created_at: u64,
@@ -28,39 +34,49 @@ pub struct JointAuctionMetadata {
 
     pub highest_bid: Option<Balance>,
 
-    pub item_id: Set<ItemId>,
+    pub set_item_id: Vec<ItemId>,
 
     pub is_finish: bool,
+
+    // need to have accept of all user
+    pub pool: Pool,
+
+    pub is_open: bool,
 }
 
 pub trait ImplJointAuction {
-    /// Create new auction by user
+    fn check_collaboration_of_auction(&self, joint_auction_id: JointAuctionId) -> bool;
+
+    /// like the invitation to other user would like to join in
+    /// we will have the accept function to change ...
+    /// after all ... accept then we will open the auction
+    /// create in contract a UnorderSet of joint auction
+    /// auction just add in here when satisfy requirement
     fn create_joint_auction(
         &mut self,
 
-        items_id: Set<ItemId>,
+        users_invited: Vec<UserId>,
+
+        set_item_id: Vec<ItemId>,
 
         closed_at: u64,
 
         floor_price: Option<Balance>,
-    );
+    ) -> JointAuctionMetadata;
 
-    // fn get_all_auctions(&self) -> Vec<AuctionMetadata>;
+    fn accept_invitation(&mut self);
 
-    // /// Get all auctions per user
-    // fn get_all_auctions_host_per_user(
-    //     &self,
-    //     user_id: UserId,
-    //     start: Option<u32>,
-    //     limit: Option<u32>,
-    // ) -> Vec<AuctionMetadata>;
+    fn get_all_joint_auctions_open(&self) -> Vec<JointAuctionMetadata>; // just for auctions that is open
 
-    // /// Get auction metadata by auction id
-    // fn get_auction_metadata_by_auction_id(&self, auction_id: AuctionId) -> Option<AuctionMetadata>;
+    /// Get joint auction metadata by auction id
+    fn get_joint_auction_metadata_by_joint_auction_id(
+        &self,
+        joint_auction_id: JointAuctionId,
+    ) -> Option<JointAuctionMetadata>;
 
-    // fn delete_auction(&mut self, auction_id: AuctionId);
+    fn delete_joint_auction(&mut self, joint_auction_id: JointAuctionId);
 
-    // fn join_auction(&mut self, auction_id: AuctionId); // payment
+    fn bid_joint_auction(&mut self, joint_auction_id: JointAuctionId); // like fn join_auction in normal auction
 
     // fn get_user_bid_transaction_by_auction_id(
     //     &self,
@@ -71,6 +87,4 @@ pub trait ImplJointAuction {
     // fn get_all_transaction_by_auction_id(&self, auction_id: AuctionId) -> Vec<BidTransaction>;
 
     // fn finish_auction(&mut self, auction_id: AuctionId);
-
-    // fn get_sum_total_bid_transactions_of_auction(&self, auction_id: AuctionId) -> u128;
 }

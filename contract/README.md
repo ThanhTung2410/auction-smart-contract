@@ -147,3 +147,39 @@ cargo make call finish_auction '{"auction_id": "auction_Vinhome_central_park_tha
 ```
 cargo make view get_sum_total_bid_transactions_of_auction '{"auction_id": "auction_Vinhome_central_park_thanhtung2410.testnet"}'
 ```
+
+# Joint Auction
+
+## create_item
+
+```
+cargo make call create_item '{"name": "Vinhome central park", "description": "Khu can ho cao cap", "media": "https://vinhomecentralpark.com/wp-content/uploads/2021/02/mat-bang-vinhomes-central-park.jpg"}' --account-id thanhtung2410.testnet
+```
+
+```
+cargo make call create_item '{"name": "Pi", "description": "Cong dong Pi lac quan", "media": "https://global-uploads.webflow.com/5fad86e2327507cecea2d5e8/644e2b0746017e63acb2f845_Pi%20Network%20Mobile%20Mining.jpg"}' --account-id test_auction_contract.testnet
+```
+
+## get_item_metadata_by_item_id
+
+```
+cargo make call get_item_metadata_by_item_id '{"item_id": "item_Vinhome_central_park_thanhtung2410.testnet"}' --account-id thanhtung2410.testnet
+```
+
+## create_joint_auction
+
+```
+cargo make call create_joint_auction '{"users_invited": ["test_auction_contract.testnet"], "set_item_id": ["item_Vinhome_central_park_thanhtung2410.testnet", "item_Pi_test_auction_contract.testnet"], "closed_at": 1690731834000, "floor_price": 0}' --account-id thanhtung2410.testnet
+```
+
+## get_joint_auction_metadata_by_joint_auction_id
+
+```
+cargo make view get_joint_auction_metadata_by_joint_auction_id '{"joint_auction_id": "1"}'
+```
+
+## check_collaboration_of_auction
+
+```
+cargo make view check_collaboration_of_auction '{"joint_auction_id": "1"}'
+```

@@ -12,6 +12,7 @@ use super::{
     auction::{AuctionId, AuctionMetadata},
     bid_transaction::BidTransaction,
     item::{ItemId, ItemMetadata},
+    joint_auction::{JointAuctionId, JointAuctionMetadata},
     user::{JsonUser, UserId},
 };
 
@@ -72,6 +73,11 @@ pub struct AuctionContract {
     pub auction_metadata_by_id: LookupMap<AuctionId, AuctionMetadata>,
 
     pub all_auctions: UnorderedSet<AuctionId>,
+
+    // Joint Auction above is normal auction
+    pub joint_auction_metadata_by_id: LookupMap<JointAuctionId, JointAuctionMetadata>,
+
+    pub all_joint_auctions: UnorderedSet<JointAuctionId>,
 }
 
 /// The `ContractStorageKey` enum represents keys for different persistent collections in the contract storage.
@@ -86,4 +92,6 @@ pub enum ContractStorageKey {
     TransactionPerUserHave,
     AuctionMetadataById,
     AllAuctions,
+    JointAuctionMetadataById,
+    AllJointAuctions,
 }

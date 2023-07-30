@@ -59,10 +59,18 @@ impl AuctionContract {
                     .try_to_vec()
                     .unwrap(),
             ),
+            joint_auction_metadata_by_id: LookupMap::new(
+                ContractStorageKey::JointAuctionMetadataById
+                    .try_to_vec()
+                    .unwrap(),
+            ),
             user_metadata_by_id: LookupMap::new(
                 ContractStorageKey::UserMetadataById.try_to_vec().unwrap(),
             ),
             all_auctions: UnorderedSet::new(ContractStorageKey::AllAuctions.try_to_vec().unwrap()),
+            all_joint_auctions: UnorderedSet::new(
+                ContractStorageKey::AllJointAuctions.try_to_vec().unwrap(),
+            ),
         }
     }
 }

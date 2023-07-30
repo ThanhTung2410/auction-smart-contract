@@ -116,12 +116,18 @@ impl ImplJointAuction for AuctionContract {
 
     fn get_all_joint_auctions_open(&self) -> Vec<JointAuctionMetadata> {
         let mut result = Vec::new();
-        // if self.all_auctions.is_empty() {
-        //     return result;
-        // }
-        // for auction_id in self.all_auctions.iter() {
-        //     result.push(self.get_auction_metadata_by_auction_id(auction_id).unwrap());
-        // }
+        if self.all_joint_auctions.is_empty() {
+            return result;
+        }
+        for joint_auction_id in self.all_joint_auctions.iter() {
+            let joint_auction = self
+                .joint_auction_metadata_by_id
+                .get(&joint_auction_id)
+                .unwrap();
+            if joint_auction.is_open {
+                result.push(joint_auction);
+            }
+        }
         result
     }
 

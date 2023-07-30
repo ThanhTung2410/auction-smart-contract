@@ -173,7 +173,7 @@ impl ImplAuction for AuctionContract {
         self.auctions_join_per_user
             .insert(&auction_id, &set_auctions_user_join);
 
-        Promise::new(auction.host_id).transfer(env::attached_deposit());
+        Promise::new(env::current_account_id()).transfer(env::attached_deposit());
     }
 
     fn get_user_bid_transaction_by_auction_id(
@@ -229,23 +229,43 @@ impl ImplAuction for AuctionContract {
             .get_auction_metadata_by_auction_id(auction_id.clone())
             .unwrap();
 
-        assert!(!auction.is_finish, "The auction had finished");
+        // assert!(!auction.is_finish, "The auction had finished");
 
         auction.is_finish = true;
         self.auction_metadata_by_id.insert(&auction_id, &auction);
 
         // update owner_item
         let mut item = self.item_metadata_by_id.get(&auction.item_id).unwrap();
-        item.owner_id = auction.winner.unwrap();
+        let winner = auction.winner.unwrap();
+        item.owner_id = winner.clone();
         self.item_metadata_by_id.insert(&item.item_id, &item);
+        
+        let mut set_items_host = self.items_per_user.get(&auction.host_id).unwrap();
+        set_items_host.remove(&item.item_id);
+        self.items_per_user
+            .insert(&auction.host_id, &set_items_host);
+        
+        let mut set_items_winner = self
+            .items_per_user
+            .get(&winner)
+            .or_else(|| {
+                let key = String::from("items_") + &winner.to_string(); // in case user do not have any items before
+                Some(UnorderedSet::new(key.into_bytes()))
+            }) // convert string to byte string
+            .unwrap();
+        set_items_winner.insert(&item.item_id);
+        self.items_per_user.insert(&winner, &set_items_winner);
 
         // send back money
         let transactions = self.get_all_transaction_by_auction_id(auction_id.clone());
         for transaction in transactions.iter() {
-            if transaction.owner_id != auction.host_id {
+            if transaction.owner_id != winner {
                 Promise::new(transaction.owner_id.clone())
                     .transfer(transaction.total_bid.clone() * ONE_NEAR);
             }
         }
+
+        // send money to host
+        Promise::new(auction.host_id).transfer(auction.highest_bid.unwrap() * ONE_NEAR);
     }
 }

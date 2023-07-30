@@ -1,6 +1,6 @@
 use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
 use near_sdk::serde::{Deserialize, Serialize};
-use near_sdk::{Balance, __private::schemars::Set};
+use near_sdk::Balance;
 
 use super::bid_transaction::BidTransaction;
 use super::{item::ItemId, user::UserId};
@@ -33,15 +33,7 @@ pub struct AuctionMetadata {
 
 pub trait ImplAuction {
     /// Create new auction by user
-    fn create_auction(
-        &mut self,
-
-        auction_id: AuctionId,
-
-        closed_at: u64,
-
-        floor_price: Option<Balance>,
-    );
+    fn create_auction(&mut self, item_id: ItemId, closed_at: u64, floor_price: Option<Balance>);
 
     fn get_all_auctions(&self) -> Vec<AuctionMetadata>;
 

@@ -239,12 +239,12 @@ impl ImplAuction for AuctionContract {
         let winner = auction.winner.unwrap();
         item.owner_id = winner.clone();
         self.item_metadata_by_id.insert(&item.item_id, &item);
-        
+
         let mut set_items_host = self.items_per_user.get(&auction.host_id).unwrap();
         set_items_host.remove(&item.item_id);
         self.items_per_user
             .insert(&auction.host_id, &set_items_host);
-        
+
         let mut set_items_winner = self
             .items_per_user
             .get(&winner)

@@ -3,11 +3,11 @@ import { Dispatch, SetStateAction, useState } from "react";
 interface ModalProps {
   isShowModal: boolean;
   setIsShowModal: Dispatch<SetStateAction<boolean>>;
-  finishDeleteItem: (e: any) => Promise<void>;
+  finishDelete: (e: any) => Promise<void>;
 }
 
 export default function Modal(props: ModalProps) {
-  const { isShowModal, setIsShowModal, finishDeleteItem } = props;
+  const { isShowModal, setIsShowModal, finishDelete } = props;
   return (
     <>
       {isShowModal ? (
@@ -44,7 +44,7 @@ export default function Modal(props: ModalProps) {
                     type="button"
                     onClick={(event) => {
                       setIsShowModal(false);
-                      finishDeleteItem(event);
+                      finishDelete(event);
                     }}
                   >
                     Delete

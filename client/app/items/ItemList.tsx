@@ -190,7 +190,7 @@ export default function ItemList(props: ItemListProps) {
       <Modal
         isShowModal={isShowModal}
         setIsShowModal={setIsShowModal}
-        finishDeleteItem={finishDeleteItem}
+        finishDelete={finishDeleteItem}
       />
     </>
   );

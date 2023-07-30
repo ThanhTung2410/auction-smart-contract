@@ -88,7 +88,31 @@ impl ImplJointAuction for AuctionContract {
         // self.auctions_host_per_user.insert(&owner_id, &set_auction_user_host);
     }
 
-    fn accept_invitation(&mut self) {}
+    fn accept_invitation(&mut self, joint_auction_id: JointAuctionId) {
+        let user_invited_id = env::signer_account_id();
+        let mut joint_auction = self
+            .joint_auction_metadata_by_id
+            .get(&joint_auction_id)
+            .unwrap();
+
+        assert!(
+            !joint_auction.pool.map.get(&user_invited_id).is_none(),
+            "You are not invited to this auction"
+        );
+
+        joint_auction.pool.map.insert(user_invited_id, true);
+
+        self.joint_auction_metadata_by_id
+            .insert(&joint_auction_id, &joint_auction);
+
+        // need to update joint_auction_metadata_by_id first
+        // before call this func because this func use the joint_auction_metadata_by_id
+        if self.check_collaboration_of_auction(joint_auction_id.clone()) {
+            joint_auction.is_open = true;
+            self.joint_auction_metadata_by_id
+                .insert(&joint_auction_id, &joint_auction); // save
+        }
+    }
 
     fn get_all_joint_auctions_open(&self) -> Vec<JointAuctionMetadata> {
         let mut result = Vec::new();
@@ -106,7 +130,8 @@ impl ImplJointAuction for AuctionContract {
         joint_auction_id: JointAuctionId,
     ) -> Option<JointAuctionMetadata> {
         assert!(
-            self.joint_auction_metadata_by_id.contains_key(&joint_auction_id),
+            self.joint_auction_metadata_by_id
+                .contains_key(&joint_auction_id),
             "Auction does not exist"
         );
         self.joint_auction_metadata_by_id.get(&joint_auction_id)

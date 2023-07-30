@@ -183,3 +183,9 @@ cargo make view get_joint_auction_metadata_by_joint_auction_id '{"joint_auction_
 ```
 cargo make view check_collaboration_of_auction '{"joint_auction_id": "1"}'
 ```
+
+## accept_invitation
+
+```
+cargo make call accept_invitation '{"joint_auction_id": "1"}' --account-id test_auction_contract.testnet
+```

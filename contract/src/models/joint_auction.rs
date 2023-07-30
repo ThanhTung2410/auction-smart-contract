@@ -64,7 +64,7 @@ pub trait ImplJointAuction {
         floor_price: Option<Balance>,
     ) -> JointAuctionMetadata;
 
-    fn accept_invitation(&mut self);
+    fn accept_invitation(&mut self, joint_auction_id: JointAuctionId);
 
     fn get_all_joint_auctions_open(&self) -> Vec<JointAuctionMetadata>; // just for auctions that is open
 

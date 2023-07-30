@@ -7,7 +7,6 @@ import {
   selectIsLoading,
   selectWallet,
 } from "@/features/walletSlice";
-import { url } from "inspector";
 import { useEffect, useState } from "react";
 
 const CONTRACT_ID = process.env.NEXT_PUBLIC_CONTRACT_NAME || "";
@@ -122,7 +121,7 @@ const Form = () => {
   const [unixTimestamp, setUnixTimeStamp] = useState<number>(0);
   const [timeClose, setTimeClose] = useState<Date>(new Date());
   const [floorPrice, setFloorPrice] = useState<number>(0);
-  const [itemId, setItemId] = useState<number>();
+  const [itemId, setItemId] = useState<string>();
 
   const [userItems, setUserItems] = useState<Item[]>([]);
 
@@ -136,6 +135,10 @@ const Form = () => {
             user_id: account,
           },
         });
+
+        // get auction_host_per_user to remove item from select because that item
+        // are used for auction
+
         setUserItems(result);
         console.log(result);
       }
@@ -162,15 +165,14 @@ const Form = () => {
         contractId: CONTRACT_ID,
         method: "create_auction",
         args: {
-          auction_id: 6, // id hard code just for text
-          item_id: parseInt(itemId),
+          item_id: itemId,
           closed_at: unixTimestamp,
           floor_price: parseFloat(floorPrice),
         },
         gas: "300000000000000",
       })
       .then(() => setWalletReady(true))
-      .then(() => (window.location.href = "/app/page.tsx"));
+      .then(() => window.location.reload());
   };
 
   const handleChange = (setState: any) => (event: any) => {
@@ -194,6 +196,9 @@ const Form = () => {
             value={itemId}
             onChange={handleChange(setItemId)}
           >
+            <option selected defaultValue={""} disabled>
+              Choose your item
+            </option>
             {userItems.map((item) => {
               if (!item.is_auction)
                 return (

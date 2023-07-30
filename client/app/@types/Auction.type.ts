@@ -12,4 +12,5 @@ export interface Auction {
   users_join_auction: User[];
   item_id: string;
   item_metadata: Item;
+  is_finish: boolean;
 }

@@ -16,7 +16,7 @@ import CountdownTimer from "@/app/components/CountdownTimer/CountdownTimer";
 const CONTRACT_ID = process.env.NEXT_PUBLIC_CONTRACT_NAME || "";
 
 const Root = styled.div`
-  color: black; // hard code
+  color: black;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -195,17 +195,6 @@ const TableBody = styled.div`
   }
 `;
 
-const RowType = styled.div`
-  display: inline-flex;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 0.5em;
-  font-size: 0.75rem;
-  padding: 0.25em 1em;
-  border-radius: 0.7em;
-  border: 1px solid #a4a9b6;
-`;
-
 const RowBody = styled.div`
   display: flex;
   flex-direction: row;
@@ -234,51 +223,6 @@ const MintDetails = styled.div`
   }
 `;
 
-const Popup = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  backdrop-filter: blur(5px); /* Apply background blur */
-`;
-
-const PopupContent = styled.div`
-  background-color: #fff;
-  padding: 20px;
-  border-radius: 5px;
-  align-items: center;
-  max-width: 350px;
-  display: flex;
-  justify-content: center;
-  width: 100%;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-`;
-
-const Input = styled.input`
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 16px;
-`;
-
-const Button = styled.button`
-  background-color: #0d99ff;
-  color: white;
-  padding: 5px 15px;
-  border: none;
-  margin-top: 20px;
-  margin-right: 10px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 16px;
-`;
-
 const CloseNFT = styled.div`
   margin-right: 10px;
   display: flex;
@@ -291,180 +235,19 @@ const CloseNFT = styled.div`
   }
 `;
 
-const CloseButton = styled.button`
-  background-color: white;
-  color: #0d99ff;
-  margin-top: 20px;
-  padding: 5px 15px;
-  border: 1px solid #0d99ff;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 16px;
-`;
-
-const MarketplaceListed = styled.div`
-  margin-top: 10px;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  & > span {
-    font-size: 14px;
-    color: #525c76;
-  }
-  & > p {
-    margin: 0;
-    font-size: 14px;
-  }
-`;
-
-// const getUsdValue = (price) => {
-//   const res = fetch(
-//     `https://api.coingecko.com/api/v3/simple/price?ids=${
-//       currentChain[props.state.singleNftProps.chain].livePrice
-//     }&vs_currencies=usd`
-//   );
-//   if (res.ok) {
-//     const multiplyBy = Object.values(res?.body)[0]?.usd;
-//     const value = multiplyBy * price.toFixed(2);
-//     console.log(value.toFixed(4));
-//     return value.toFixed(4) !== "NaN" ? value.toFixed(4) : 0;
-//   }
-// };
-
-// const handleBuyClick = () => {
-//   const contract = new ethers.Contract(
-//     currentChain[props.state.singleNftProps.chain].contract,
-//     listAbi,
-//     Ethers.provider().getSigner()
-//   );
-
-//   const nftContract = props.state.singleNftProps.id.split(
-//     props.state.singleNftProps.tokenId
-//   )[0];
-
-//   console.log("trying to buy oo");
-//   console.log(
-//     "variab;es",
-//     currentChain[props.state.singleNftProps.chain].contract,
-//     nftContract,
-//     contract
-//   );
-
-//   contract
-//     .nftSale(
-//       props.state.singleNftProps.price,
-//       props.state.singleNftProps.tokenId,
-//       props.state.singleNftProps.owner,
-//       nftContract,
-//       { value: props.state.singleNftProps.price }
-//     )
-//     .then((transactionHash) => transactionHash.wait())
-//     .then((ricit) => {
-//       console.log("does not get hiere", ricit);
-//       State.update({
-//         message: true,
-//         text: `${currentChain[props.state.singleNftProps.chain].explorer}/tx/${
-//           ricit.transactionHash
-//         }`,
-//       });
-//       props.handleCloseNft();
-//     })
-//     .catch((err) => {
-//       State.update({
-//         error: true,
-//         text: err.reason,
-//       });
-//     });
-// };
-
-// const handleSendClick = () => {
-//   // Handle the send button click event
-//   console.log("Input value:", state.listingPrice, Number(state.listingPrice));
-//   console.log(
-//     "Input value:",
-//     Ethers.provider().getSigner(),
-//     currentChain[props.state.singleNftProps.chain].contract
-//   );
-//   const contract = new ethers.Contract(
-//     currentChain[props.state.singleNftProps.chain].contract,
-//     listAbi,
-//     Ethers.provider().getSigner()
-//   );
-//   console.log("Formed thee", contract);
-//   const nftContract = props.state.singleNftProps.id.split(
-//     props.state.singleNftProps.tokenId
-//   )[0];
-
-//   console.log(
-//     "Logged Thee",
-//     nftContract,
-//     props.state.singleNftProps.tokenId,
-//     (Number(state.listingPrice) * 1e18).toString()
-//   );
-
-//   contract
-//     .createMarketplaceItem(
-//       nftContract,
-//       props.state.singleNftProps.tokenId,
-//       (Number(state.listingPrice) * 1e18).toString(),
-//       "General",
-//       "0xB4bE310666D2f909789Fb1a2FD09a9bEB0Edd99D"
-//     )
-//     .then((transactionHash) => transactionHash.wait())
-//     .then((ricit) => {
-//       console.log("does not get hiere", ricit);
-//       State.update({
-//         isOpen: false,
-//         message: true,
-//         text: `${currentChain[props.state.singleNftProps.chain].explorer}/tx/${
-//           ricit.transactionHash
-//         }`,
-//       });
-//     })
-//     .catch((err) => {
-//       console.log("erro stuffs, baffles me", err);
-//       State.update({
-//         isOpen: false,
-//         error: true,
-//         text: err.reason,
-//       });
-//     });
-// };
-
-// const handleListing = () => {
-//   State.update({
-//     isOpen: true,
-//   });
-// };
-
-// const handleInputChange = (e) => {
-//   console.log("updator", e.target.value);
-//   State.update({
-//     listingPrice: e.target.value,
-//   });
-// };
-
-// const price = props.state.singleNftProps.price
-//   ? props.state.singleNftProps.price * PRICE_CONVERSION_VALUE
-//   : 0;
-
-// const handleClose = () => {
-//   props.isNFTButtonClicked = false;
-// };
-
 export default function page() {
   const wallet = useAppSelector(selectWallet);
   const account = useAppSelector(selectAccountId);
+  const [walletReady, setWalletReady] = useState(false);
+  const isLoading = useAppSelector(selectIsLoading);
+
   const [bid, setBid] = useState<number>(0);
   const [currentUserTransaction, setCurrentUserTransaction] =
     useState<BidTransaction | null>(null);
-
   const [transactionsOfAuction, setTransactionOfAuction] = useState<
     BidTransaction[]
   >([]);
   const [auction, setAuction] = useState<Auction | null>(null);
-  const [walletReady, setWalletReady] = useState(false);
-  const isLoading = useAppSelector(selectIsLoading);
 
   const searchParams = useSearchParams();
 
@@ -520,13 +303,12 @@ export default function page() {
         setAuction(newResult);
         setCurrentUserTransaction(transactionFound);
         setTransactionOfAuction(allTransactions);
-        console.log(allTransactions);
       }
     };
     getData();
   }, [walletReady]);
 
-  const changeMessage = async (e: any) => {
+  const joinAuction = async (e: any) => {
     if (!wallet) {
       console.error("Wallet is not initialized");
       return;
@@ -550,6 +332,25 @@ export default function page() {
       .then(() => window.location.reload());
   };
 
+  const finishAuction = async (e: any) => {
+    if (!wallet) {
+      console.error("Wallet is not initialized");
+      return;
+    }
+    setWalletReady(false);
+    e.preventDefault();
+
+    await wallet
+      .callMethod({
+        contractId: CONTRACT_ID,
+        method: "finish_auction",
+        args: { auction_id: id },
+        gas: "300000000000000",
+      })
+      .then(() => setWalletReady(true))
+      .then(() => window.location.reload());
+  };
+
   const handleChange = (event: any) => {
     setBid(event.target.value);
   };
@@ -558,22 +359,16 @@ export default function page() {
     <Root>
       <MainContainer>
         <TopSection>
-          <CloseNFT
-          //   onClick={() => props.handleCloseNft()}
-          >
+          <CloseNFT>
             <img
               src="https://cdn-icons-png.flaticon.com/256/109/109618.png"
               alt=""
             />
           </CloseNFT>
           <TopImageContainer>
-            <HeaderText>
-              {/* hard code for text */}
-              {auction?.item_metadata.name}
-            </HeaderText>
+            <HeaderText>{auction?.item_metadata.name}</HeaderText>
             <img
               src={auction?.item_metadata.media}
-              alt="NFT"
               width="100%"
               height="100%"
               className="rounded-3"
@@ -600,39 +395,26 @@ export default function page() {
             </div>
           </TopImageContainer>
           <RightSection>
-            {/* {state.error && (
-              <span style={{ color: state.colour || "red" }}>{state.text}</span>
-            )} */}
-            {/* {state.message && (
-              <a href={`${state.text}`} target="_blank">
-                View Transaction
-              </a>
-            )} */}
             <PriceBucket>
               <div>
                 <p style={{ color: "#b2b7c2", marginBottom: 0 }}>CURRENT BID</p>
-                <PriceArea>
-                  {auction?.highest_bid} (NEAR)
-                  {/* <h6>{price.toFixed(2)}</h6>
-                  <span>
-                    ($
-                    {getUsdValue(
-                      props.state.singleNftProps.price *
-                        PRICE_CONVERSION_VALUE || 0
-                    )}
-                    )
-                  </span> */}
-                </PriceArea>
+                <PriceArea>{auction?.highest_bid} (NEAR)</PriceArea>
               </div>
               <div>
                 <PriceArea>
+                  {auction?.host_id === account && !auction?.is_finish && (
+                    <button onClick={finishAuction}>Finish auction</button>
+                  )}
                   {auction?.host_id !== account && (
-                    <form onSubmit={changeMessage}>
-                      <p>
-                        {currentUserTransaction
-                          ? currentUserTransaction.total_bid
-                          : 0}
-                      </p>
+                    <p>
+                      Your previous bid:{" "}
+                      {currentUserTransaction
+                        ? currentUserTransaction.total_bid
+                        : 0}
+                    </p>
+                  )}
+                  {auction?.host_id !== account && !auction?.is_finish && (
+                    <form onSubmit={joinAuction}>
                       <label>Enter the amount you want to bid</label> (NEAR)
                       <input
                         type="number"
@@ -642,89 +424,8 @@ export default function page() {
                       <button>Bid</button>
                     </form>
                   )}
-
-                  {/* <h6>{price.toFixed(2)}</h6>
-                  <span>
-                    ($
-                    {getUsdValue(
-                      props.state.singleNftProps.price *
-                        PRICE_CONVERSION_VALUE || 0
-                    )}
-                    )
-                  </span> */}
                 </PriceArea>
               </div>
-              {/* copy to test */}
-              {/* <Popup>
-                <div>
-                  <PopupContent>
-                    <div>
-                      <Input
-                        type="text"
-                        // value={state.listingPrice}
-                        // onChange={handleInputChange}
-                        placeholder="Enter Listing Price"
-                      />
-                      <div
-                        style={{
-                          width: "100%",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          flexDirection: "row",
-                          marginLeft: "40px",
-                        }}
-                      >
-                        <Button
-                        // onClick={handleSendClick}
-                        >
-                          List NFT
-                        </Button>
-                        <CloseButton
-                        //   onClick={() => State.update({ isOpen: false })}
-                        >
-                          Close
-                        </CloseButton>
-                      </div>
-                    </div>
-                  </PopupContent>
-                </div>
-              </Popup> */}
-
-              {/* original */}
-              {/* {state.isOpen && (
-                <Popup>
-                  <div>
-                    <PopupContent>
-                      <div>
-                        <Input
-                          type="text"
-                          value={state.listingPrice}
-                          onChange={handleInputChange}
-                          placeholder="Enter Listing Price"
-                        />
-                        <div
-                          style={{
-                            width: "100%",
-                            display: flex,
-                            alignItems: "center",
-                            justifyContent: "center",
-                            flexDirection: "row",
-                            marginLeft: "40px",
-                          }}
-                        >
-                          <Button onClick={handleSendClick}>List NFT</Button>
-                          <CloseButton
-                            onClick={() => State.update({ isOpen: false })}
-                          >
-                            Close
-                          </CloseButton>
-                        </div>
-                      </div>
-                    </PopupContent>
-                  </div>
-                </Popup> */}
-              {/* )} */}
             </PriceBucket>
             <Description>
               <h6>Description</h6>
@@ -733,7 +434,7 @@ export default function page() {
             <Description>
               <h6>Attributes</h6>
 
-              {/* test */}
+              {/* later */}
               <AttributeContainer>
                 <Attribute>
                   <div>
@@ -756,46 +457,6 @@ export default function page() {
                   </div>
                 </Attribute>
               </AttributeContainer>
-
-              {/* <AttributeContainer>
-                {props.state.singleNftProps.attributes ? (
-                  props.state.singleNftProps.attributes.map((data) => (
-                    <Attribute>
-                      <div>
-                        <span style={{ color: "#b2b7c2" }}>File Type</span>
-                         <p style={{ marginTop: "10px" }}>{data.trait_type}</p>
-                      </div>
-                      <div>
-                        <span style={{ color: "#b2b7c2" }}>Rarity</span>
-                        <p style={{ marginTop: "10px" }}>{data.value}</p>
-                      </div>
-                    </Attribute>
-                  ))
-                ) : (
-                  <>
-                    <Attribute>
-                      <div>
-                        <span style={{ color: "#b2b7c2" }}>File Type</span>
-                        <p style={{ marginTop: "10px" }}>image/png</p>
-                      </div>
-                      <div>
-                        <span style={{ color: "#b2b7c2" }}>Rarity</span>
-                        <p style={{ marginTop: "10px" }}>1%</p>
-                      </div>
-                    </Attribute>
-                    <Attribute>
-                      <div>
-                        <span style={{ color: "#b2b7c2" }}>Category</span>
-                        <p style={{ marginTop: "10px" }}>Digital Graphic</p>
-                      </div>
-                      <div>
-                        <span style={{ color: "#b2b7c2" }}>Rarity</span>
-                        <p style={{ marginTop: "10px" }}>1%</p>
-                      </div>
-                    </Attribute>
-                  </>
-                )}
-              </AttributeContainer> */}
             </Description>
             <Description>
               <h6>Details</h6>
@@ -809,7 +470,9 @@ export default function page() {
               </MintDetails>
               {auction?.closed_at && (
                 <div style={{ marginTop: "0.5rem" }}>
-                  <CountdownTimer timestamp={auction?.closed_at} />
+                  {!auction.is_finish && (
+                    <CountdownTimer timestamp={auction?.closed_at} />
+                  )}
                 </div>
               )}
             </Description>
@@ -821,20 +484,25 @@ export default function page() {
           <h1>Auction History</h1>
         </TableHeader>
         {transactionsOfAuction &&
-          transactionsOfAuction.map((transaction) => (
-            <TableBody key={transaction.owner_id}>
-              {/* <RowType>Listing</RowType> */}
-              <a>
-                <RowBody>
-                  <span>Account ID</span>
-                  <p>{transaction.owner_id}</p>
-                  <span>Bid</span>
-                  <p>{transaction.total_bid}</p>
-                  <p>{new Date(transaction.updated_at).toLocaleString()}</p>
-                </RowBody>
-              </a>
-            </TableBody>
-          ))}
+          transactionsOfAuction
+            .sort((a, b) => {
+              if (a.total_bid < b.total_bid) return 1;
+              else if (a.total_bid > b.total_bid) return -1;
+              else return 0;
+            })
+            .map((transaction) => (
+              <TableBody key={transaction.owner_id}>
+                <a>
+                  <RowBody>
+                    <span>Account ID</span>
+                    <p>{transaction.owner_id}</p>
+                    <span>Bid</span>
+                    <p>{transaction.total_bid}</p>
+                    <p>{new Date(transaction.updated_at).toLocaleString()}</p>
+                  </RowBody>
+                </a>
+              </TableBody>
+            ))}
       </TransactionTable>
     </Root>
   );

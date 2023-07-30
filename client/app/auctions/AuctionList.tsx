@@ -1,7 +1,6 @@
 "use client";
 
 import styled from "styled-components";
-import { Item } from "../@types/Item.type";
 import { Dispatch, SetStateAction, useState, useEffect } from "react";
 import { useAppSelector } from "@/context/store";
 import {
@@ -13,6 +12,7 @@ import { Auction } from "../@types/Auction.type";
 import Title from "../components/Title";
 import CountdownTimer from "../components/CountdownTimer/CountdownTimer";
 import Link from "next/link";
+import Modal from "../components/Modal";
 
 const CONTRACT_ID = process.env.NEXT_PUBLIC_CONTRACT_NAME || "";
 
@@ -84,48 +84,52 @@ interface AuctionListProps {
 
 export default function AuctionList(props: AuctionListProps) {
   const { auctions, setAuctions } = props;
-  const [currentItem, setCurrentItem] = useState<Item | null>(null);
-  const [isShowModal, setIsShowModal] = useState(false);
+
   const wallet = useAppSelector(selectWallet);
   const account = useAppSelector(selectAccountId);
-  const [walletReady, setWalletready] = useState(false);
   const isLoading = useAppSelector(selectIsLoading);
+  const [walletReady, setWalletReady] = useState(false);
+
+  const [currentAuction, setCurrentAuction] = useState<Auction | null>(null);
+  const [isShowModal, setIsShowModal] = useState(false);
 
   useEffect(() => {
     if (!isLoading && wallet) {
-      setWalletready(true);
+      setWalletReady(true);
     }
   }, [isLoading, wallet]);
 
-  const finishDeleteItem = async (e: any) => {
+  const finishDeleteAuction = async (e: any) => {
     if (!wallet) {
       console.error("Wallet is not initialized");
       return;
     }
-    setWalletready(false);
+    setWalletReady(false);
     e.preventDefault();
 
     await wallet
       .callMethod({
         contractId: CONTRACT_ID,
         method: "delete_auction",
-        args: { item_id: currentItem?.item_id },
+        args: { auction_id: currentAuction?.auction_id },
         gas: "300000000000000",
       })
-      .then(() => setWalletready(true))
-      .then(() => setCurrentItem(null))
+      .then(() => setWalletReady(true))
+      .then(() => setCurrentAuction(null))
       .then(() => {
         window.location.reload();
       });
   };
 
-  // const startDeleteItem = (itemId: number) => {
-  //   let itemFound = items.find((item) => item.item_id === itemId);
-  //   if (itemFound) {
-  //     setCurrentItem(itemFound);
-  //   }
-  //   setIsShowModal(true);
-  // };
+  const startDeleteAuction = (auctionId: string) => {
+    let auctionFound = auctions.find(
+      (auction) => auction.auction_id === auctionId
+    );
+    if (auctionFound) {
+      setCurrentAuction(auctionFound);
+    }
+    setIsShowModal(true);
+  };
 
   return (
     <>
@@ -140,6 +144,13 @@ export default function AuctionList(props: AuctionListProps) {
           </button>
         </Link>
       </div>
+      {auctions.length === 0 && (
+        <div style={{ textAlign: "center" }}>
+          <h1 style={{ color: "black", marginTop: "1rem" }}>
+            There are not any auctions
+          </h1>
+        </div>
+      )}
       <Cards>
         {auctions.map((auction) => (
           <Card key={auction.auction_id}>
@@ -155,18 +166,22 @@ export default function AuctionList(props: AuctionListProps) {
               </Text>
             </div>
 
-            <CountdownTimer timestamp={auction.closed_at} />
+            {auction.is_finish ? (
+              <b style={{ color: "black" }}>The auction has finished</b>
+            ) : (
+              <CountdownTimer timestamp={auction.closed_at} />
+            )}
 
-            {account !== auction.host_id && (
+            {account !== auction.host_id && !auction.is_finish && (
               <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                Auction
+                Bid
               </button>
             )}
 
-            {account === auction.host_id && (
+            {account === auction.host_id && !auction.is_finish && (
               <button
                 // onClick={() => {
-                //   startDeleteItem(item.item_id);
+                //   startDeleteAuction(auction.auction_id);
                 // }}
                 className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
               >
@@ -174,10 +189,10 @@ export default function AuctionList(props: AuctionListProps) {
               </button>
             )}
 
-            {account === auction.host_id && (
+            {account === auction.host_id && !auction.is_finish && (
               <button
                 // onClick={() => {
-                //   startDeleteItem(item.item_id);
+                //   startDeleteAuction(auction.auction_id);
                 // }}
                 className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
               >
@@ -187,11 +202,11 @@ export default function AuctionList(props: AuctionListProps) {
           </Card>
         ))}
       </Cards>
-      {/* <Modal
+      <Modal
         isShowModal={isShowModal}
         setIsShowModal={setIsShowModal}
-        finishDeleteItem={finishDeleteItem}
-      /> */}
+        finishDelete={finishDeleteAuction}
+      />
     </>
   );
 }

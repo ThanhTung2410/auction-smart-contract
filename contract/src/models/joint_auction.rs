@@ -78,13 +78,18 @@ pub trait ImplJointAuction {
 
     fn bid_joint_auction(&mut self, joint_auction_id: JointAuctionId); // like fn join_auction in normal auction
 
-    // fn get_user_bid_transaction_by_auction_id(
-    //     &self,
-    //     auction_id: AuctionId,
-    //     user_id: UserId,
-    // ) -> Option<BidTransaction>;
+    // like get_user_bid_transaction_by_auction_id
+    fn get_user_bid_transaction_by_joint_auction_id(
+        &self,
+        joint_auction_id: JointAuctionId,
+        user_id: UserId,
+    ) -> Option<BidTransaction>;
 
-    // fn get_all_transaction_by_auction_id(&self, auction_id: AuctionId) -> Vec<BidTransaction>;
+    // like get_all_transaction_by_auction_id
+    fn get_all_transaction_by_joint_auction_id(
+        &self,
+        joint_auction_id: JointAuctionId,
+    ) -> Vec<BidTransaction>;
 
-    // fn finish_auction(&mut self, auction_id: AuctionId);
+    fn finish_joint_auction(&mut self, joint_auction_id: JointAuctionId);
 }

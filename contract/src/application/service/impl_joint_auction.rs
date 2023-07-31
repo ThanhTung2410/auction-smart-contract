@@ -248,84 +248,103 @@ impl ImplJointAuction for AuctionContract {
         Promise::new(env::current_account_id()).transfer(env::attached_deposit());
     }
 
-    // fn get_user_bid_transaction_by_auction_id(
-    //     &self,
-    //     auction_id: AuctionId,
-    //     user_id: UserId,
-    // ) -> Option<BidTransaction> {
-    //     if let Some(set_transactions_user_have) = self.transactions_per_user_have.get(&user_id) {
-    //         for transaction in set_transactions_user_have.iter() {
-    //             if transaction.owner_id == user_id && transaction.auction_id == auction_id {
-    //                 return Some(transaction);
-    //             }
-    //         }
-    //     }
-    //     None
-    // }
+    fn get_user_bid_transaction_by_joint_auction_id(
+        &self,
+        joint_auction_id: JointAuctionId,
+        user_id: UserId,
+    ) -> Option<BidTransaction> {
+        if let Some(set_transactions_user_have) = self.transactions_per_user_have.get(&user_id) {
+            for transaction in set_transactions_user_have.iter() {
+                if transaction.owner_id == user_id && transaction.auction_id == joint_auction_id {
+                    return Some(transaction);
+                }
+            }
+        }
+        None
+    }
 
-    // fn get_all_transaction_by_auction_id(&self, auction_id: AuctionId) -> Vec<BidTransaction> {
-    //     let mut result = Vec::new();
-    //     if self.auctions_join_per_user.get(&auction_id).is_none() {
-    //         return result;
-    //     }
-    //     let set_user_join_this_auction = self.auctions_join_per_user.get(&auction_id).unwrap();
-    //     if set_user_join_this_auction.is_empty() {
-    //         return result;
-    //     }
-    //     for user_id in set_user_join_this_auction.iter() {
-    //         result.push(
-    //             self.get_user_bid_transaction_by_auction_id(auction_id.clone(), user_id)
-    //                 .unwrap(),
-    //         )
-    //     }
-    //     result
-    // }
+    fn get_all_transaction_by_joint_auction_id(
+        &self,
+        joint_auction_id: JointAuctionId,
+    ) -> Vec<BidTransaction> {
+        let mut result = Vec::new();
+        if self.auctions_join_per_user.get(&joint_auction_id).is_none() {
+            return result;
+        }
+        let set_user_join_this_auction =
+            self.auctions_join_per_user.get(&joint_auction_id).unwrap();
+        if set_user_join_this_auction.is_empty() {
+            return result;
+        }
+        for user_id in set_user_join_this_auction.iter() {
+            result.push(
+                self.get_user_bid_transaction_by_joint_auction_id(
+                    joint_auction_id.clone(),
+                    user_id,
+                )
+                .unwrap(),
+            )
+        }
+        result
+    }
 
-    // // send back money to others after auction finish & change the owner of item to the winner
-    // #[payable]
-    // fn finish_auction(&mut self, auction_id: AuctionId) {
-    //     // update auction
-    //     let mut auction = self
-    //         .get_auction_metadata_by_auction_id(auction_id.clone())
-    //         .unwrap();
+    // send back money to others after auction finish & change the owner of item to the winner
+    #[payable]
+    fn finish_joint_auction(&mut self, joint_auction_id: JointAuctionId) {
+        // update auction
+        let mut joint_auction = self
+            .get_joint_auction_metadata_by_joint_auction_id(joint_auction_id.clone())
+            .unwrap();
 
-    //     // assert!(!auction.is_finish, "The auction had finished");
+        assert!(!joint_auction.is_finish, "The auction had finished");
 
-    //     auction.is_finish = true;
-    //     self.auction_metadata_by_id.insert(&auction_id, &auction);
+        joint_auction.is_finish = true;
+        self.joint_auction_metadata_by_id
+            .insert(&joint_auction_id, &joint_auction);
 
-    //     // update owner_item
-    //     let mut item = self.item_metadata_by_id.get(&auction.item_id).unwrap();
-    //     let winner = auction.winner.unwrap();
-    //     item.owner_id = winner.clone();
-    //     self.item_metadata_by_id.insert(&item.item_id, &item);
+        // update owner_item
+        let set_items_auction = joint_auction.set_item_id;
+        let winner = joint_auction.winner.unwrap();
+        let set_host_auction = joint_auction.set_host_id;
+        for item_id in set_items_auction {
+            let mut item = self.item_metadata_by_id.get(&item_id).unwrap();
+            item.owner_id = winner.clone();
+            self.item_metadata_by_id.insert(&item.item_id, &item);
 
-    //     let mut set_items_host = self.items_per_user.get(&auction.host_id).unwrap();
-    //     set_items_host.remove(&item.item_id);
-    //     self.items_per_user
-    //         .insert(&auction.host_id, &set_items_host);
+            for host_id in set_host_auction.iter() {
+                let mut set_items_host = self.items_per_user.get(host_id).unwrap();
+                set_items_host.remove(&item.item_id);
+                self.items_per_user.insert(host_id, &set_items_host);
+            }
 
-    //     let mut set_items_winner = self
-    //         .items_per_user
-    //         .get(&winner)
-    //         .or_else(|| {
-    //             let key = String::from("items_") + &winner.to_string(); // in case user do not have any items before
-    //             Some(UnorderedSet::new(key.into_bytes()))
-    //         }) // convert string to byte string
-    //         .unwrap();
-    //     set_items_winner.insert(&item.item_id);
-    //     self.items_per_user.insert(&winner, &set_items_winner);
+            let mut set_items_winner = self
+                .items_per_user
+                .get(&winner)
+                .or_else(|| {
+                    let key = String::from("items_") + &winner.to_string(); // in case user do not have any items before
+                    Some(UnorderedSet::new(key.into_bytes()))
+                }) // convert string to byte string
+                .unwrap();
+            set_items_winner.insert(&item.item_id);
+            self.items_per_user.insert(&winner, &set_items_winner);
+        }
 
-    //     // send back money
-    //     let transactions = self.get_all_transaction_by_auction_id(auction_id.clone());
-    //     for transaction in transactions.iter() {
-    //         if transaction.owner_id != winner {
-    //             Promise::new(transaction.owner_id.clone())
-    //                 .transfer(transaction.total_bid.clone() * ONE_NEAR);
-    //         }
-    //     }
+        // send back money
+        let transactions = self.get_all_transaction_by_joint_auction_id(joint_auction_id.clone());
+        for transaction in transactions.iter() {
+            if transaction.owner_id != winner {
+                Promise::new(transaction.owner_id.clone())
+                    .transfer(transaction.total_bid.clone() * ONE_NEAR);
+            }
+        }
 
-    //     // send money to host
-    //     Promise::new(auction.host_id).transfer(auction.highest_bid.unwrap() * ONE_NEAR);
-    // }
+        // send money to host
+        // suppose we will divide equally to all host
+        // divide by percentage (later)
+        let number_host = set_host_auction.len() as u128;
+        for host_id in set_host_auction {
+            Promise::new(host_id)
+                .transfer((joint_auction.highest_bid.unwrap() / number_host) * ONE_NEAR);
+        }
+    }
 }

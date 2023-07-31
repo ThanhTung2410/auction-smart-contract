@@ -215,3 +215,23 @@ cargo make view get_user_bid_transaction_by_auction_id '{"auction_id": "1", "use
 ```
 cargo make view get_user_bid_transaction_by_auction_id '{"auction_id": "1", "user_id": "auction_escrow_account.testnet"}'
 ```
+
+## get_all_items_per_user_own
+
+```
+cargo make call get_all_items_per_user_own '{"user_id": "thanhtung2410.testnet"}' --account-id thanhtung2410.testnet
+```
+
+```
+cargo make call get_all_items_per_user_own '{"user_id": "test_auction_contract.testnet"}' --account-id test_auction_contract.testnet
+```
+
+```
+cargo make call get_all_items_per_user_own '{"user_id": "auction_escrow_account.testnet"}' --account-id auction_escrow_account.testnet
+```
+
+## finish_joint_auction
+
+```
+cargo make call finish_joint_auction '{"joint_auction_id": "1"}' --account-id thanhtung2410.testnet
+```

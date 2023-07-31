@@ -157,90 +157,95 @@ impl ImplJointAuction for AuctionContract {
 
     #[payable]
     fn bid_joint_auction(&mut self, joint_auction_id: JointAuctionId) {
-        // let mut auction = self
-        //     .get_auction_metadata_by_auction_id(auction_id.clone())
-        //     .unwrap();
+        let mut joint_auction = self
+            .get_joint_auction_metadata_by_joint_auction_id(joint_auction_id.clone())
+            .unwrap();
 
-        // assert!(!auction.is_finish, "The auction had finished");
+        assert!(!joint_auction.is_finish, "The auction had finished");
 
-        // let highest_bid = auction.highest_bid.or_else(|| auction.floor_price).unwrap();
+        let highest_bid = joint_auction
+            .highest_bid
+            .or_else(|| joint_auction.floor_price)
+            .unwrap();
 
-        // let mut near_send = env::attached_deposit() / ONE_NEAR;
+        let mut near_send = env::attached_deposit() / ONE_NEAR;
 
-        // let user_join_id = env::signer_account_id();
+        let user_bid_id = env::signer_account_id();
 
-        // // each auction if user join will have one bid transaction
-        // // if user want to bid higher in that auction than the previous we will update that old transaction
+        // like normal auction
+        // each joint auction if user join will have one bid transaction
+        // if user want to bid higher in that joint auction than the previous we will update that old transaction
 
-        // // same to set auctions user join
-        // let mut set_transactions_user_have = self
-        //     .transactions_per_user_have
-        //     .get(&user_join_id)
-        //     .or_else(|| {
-        //         let key = String::from("transactions_") + &user_join_id.to_string();
-        //         Some(UnorderedSet::new(key.into_bytes()))
-        //     })
-        //     .unwrap();
+        // same to set joint auctions user join
+        let mut set_transactions_user_have = self
+            .transactions_per_user_have
+            .get(&user_bid_id)
+            .or_else(|| {
+                let key = String::from("transactions_") + &user_bid_id.to_string();
+                Some(UnorderedSet::new(key.into_bytes()))
+            })
+            .unwrap();
 
-        // let transaction_found = set_transactions_user_have.iter().find(|transaction| {
-        //     transaction.owner_id == user_join_id && transaction.auction_id == auction_id
-        // });
+        let transaction_found = set_transactions_user_have.iter().find(|transaction| {
+            transaction.owner_id == user_bid_id && transaction.auction_id == joint_auction_id
+        });
 
-        // if !transaction_found.is_none() {
-        //     let old_transaction = transaction_found.unwrap();
-        //     let mut updated_transaction = old_transaction.clone();
+        if !transaction_found.is_none() {
+            let old_transaction = transaction_found.unwrap();
+            let mut updated_transaction = old_transaction.clone();
 
-        //     let near_send_clone = near_send.clone();
-        //     near_send += updated_transaction.total_bid;
-        //     updated_transaction.total_bid += near_send_clone;
-        //     updated_transaction.updated_at = env::block_timestamp_ms();
+            let near_send_clone = near_send.clone();
+            near_send += updated_transaction.total_bid;
+            updated_transaction.total_bid += near_send_clone;
+            updated_transaction.updated_at = env::block_timestamp_ms();
 
-        //     set_transactions_user_have.remove(&old_transaction);
-        //     set_transactions_user_have.insert(&updated_transaction);
-        // } else {
-        //     let bid_transaction = BidTransaction {
-        //         updated_at: env::block_timestamp_ms(),
-        //         total_bid: near_send,
-        //         owner_id: user_join_id.clone(),
-        //         auction_id: auction_id.clone(),
-        //     };
-        //     set_transactions_user_have.insert(&bid_transaction);
-        // }
+            set_transactions_user_have.remove(&old_transaction);
+            set_transactions_user_have.insert(&updated_transaction);
+        } else {
+            let bid_transaction = BidTransaction {
+                updated_at: env::block_timestamp_ms(),
+                total_bid: near_send,
+                owner_id: user_bid_id.clone(),
+                auction_id: joint_auction_id.clone(),
+            };
+            set_transactions_user_have.insert(&bid_transaction);
+        }
 
-        // // check condition
-        // // near_send stands for both case in if statement above
-        // assert!(
-        //     near_send > highest_bid,
-        //     "You need to pay more than the highest bid"
-        // );
-        // assert!(
-        //     env::block_timestamp_ms() < auction.closed_at,
-        //     "The auction is closed"
-        // );
+        // check condition
+        // near_send stands for both case in if statement above
+        assert!(
+            near_send > highest_bid,
+            "You need to pay more than the highest bid"
+        );
+        assert!(
+            env::block_timestamp_ms() < joint_auction.closed_at,
+            "The auction is closed"
+        );
 
-        // let mut set_auctions_user_join = self
-        //     .auctions_join_per_user
-        //     .get(&auction_id)
-        //     .or_else(|| {
-        //         let key = String::from("users_join_") + &auction_id;
-        //         Some(UnorderedSet::new(key.into_bytes()))
-        //     })
-        //     .unwrap();
+        // save joint auction and the normal auction in auctions_join_per_user (temp solution)
+        let mut set_joint_auctions_user_bid = self
+            .auctions_join_per_user
+            .get(&joint_auction_id)
+            .or_else(|| {
+                let key = String::from("users_bid_") + &joint_auction_id;
+                Some(UnorderedSet::new(key.into_bytes()))
+            })
+            .unwrap();
+        set_joint_auctions_user_bid.insert(&user_bid_id);
 
-        // set_auctions_user_join.insert(&user_join_id);
+        joint_auction.winner = Some(env::signer_account_id());
+        joint_auction.highest_bid = Some(near_send);
 
-        // auction.winner = Some(env::signer_account_id());
-        // auction.highest_bid = Some(near_send);
+        self.joint_auction_metadata_by_id
+            .insert(&joint_auction_id, &joint_auction);
 
-        // self.auction_metadata_by_id.insert(&auction_id, &auction);
+        self.transactions_per_user_have
+            .insert(&env::signer_account_id(), &set_transactions_user_have);
 
-        // self.transactions_per_user_have
-        //     .insert(&env::signer_account_id(), &set_transactions_user_have);
+        self.auctions_join_per_user
+            .insert(&joint_auction_id, &set_joint_auctions_user_bid);
 
-        // self.auctions_join_per_user
-        //     .insert(&auction_id, &set_auctions_user_join);
-
-        // Promise::new(env::current_account_id()).transfer(env::attached_deposit());
+        Promise::new(env::current_account_id()).transfer(env::attached_deposit());
     }
 
     // fn get_user_bid_transaction_by_auction_id(

@@ -142,12 +142,6 @@ cargo make view get_all_transaction_by_auction_id '{"auction_id": "auction_Vinho
 cargo make call finish_auction '{"auction_id": "auction_Vinhome_central_park_thanhtung2410.testnet"}' --account-id thanhtung2410.testnet --amount 2
 ```
 
-## get_sum_total_bid_transactions_of_auction
-
-```
-cargo make view get_sum_total_bid_transactions_of_auction '{"auction_id": "auction_Vinhome_central_park_thanhtung2410.testnet"}'
-```
-
 # Joint Auction
 
 ## create_item
@@ -191,6 +185,33 @@ cargo make call accept_invitation '{"joint_auction_id": "1"}' --account-id test_
 ```
 
 ## get_all_joint_auctions_open
+
 ```
 cargo make view get_all_joint_auctions_open
+```
+
+## get_all_transaction_by_auction_id
+
+```
+cargo make view get_all_transaction_by_auction_id '{"auction_id": "1"}'
+```
+
+## bid_joint_auction
+
+```
+cargo make call bid_joint_auction '{"joint_auction_id": "1"}' --account-id test_auction_contract.testnet --amount 1
+```
+
+```
+cargo make call bid_joint_auction '{"joint_auction_id": "1"}' --account-id auction_escrow_account.testnet --amount 1
+```
+
+## get_user_bid_transaction_by_auction_id (both use for normal and joint)
+
+```
+cargo make view get_user_bid_transaction_by_auction_id '{"auction_id": "1", "user_id": "test_auction_contract.testnet"}'
+```
+
+```
+cargo make view get_user_bid_transaction_by_auction_id '{"auction_id": "1", "user_id": "auction_escrow_account.testnet"}'
 ```

@@ -58,6 +58,7 @@ pub struct AuctionContract {
     /// Map of auction host by user ID.
     pub auctions_host_per_user: LookupMap<UserId, UnorderedSet<AuctionId>>,
 
+    // can use for both normal auction and joint auction
     pub transactions_per_user_have: LookupMap<UserId, UnorderedSet<BidTransaction>>,
 
     /// Map of user join auction by auction ID.

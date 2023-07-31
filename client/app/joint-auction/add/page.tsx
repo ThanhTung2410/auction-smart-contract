@@ -235,101 +235,101 @@ const Form = () => {
     <>
       <div style={styles.formwrap}>
         <div style={styles.pagename}>Add Joint auction</div>
-        <div style={styles.formrow}>
-          <label>User invited</label>
-
-          {/* {usersChoose.length && <button>Add more user</button>} */}
-
-          {usersChoose.map((userChoose, index) => {
-            return (
-              <>
-                <select
-                  style={{ width: "100%", color: "black" }}
-                  value={userChoose}
-                  onChange={(event) => handleChangeUserChoose(event, index)}
-                >
-                  <option selected defaultValue="">
-                    Choose users
-                  </option>
-                  {users.map((user) => {
-                    if (user.user_id !== account)
-                      return (
-                        <option
-                          style={{ color: "black" }}
-                          key={user.user_id}
-                          value={user.user_id}
-                        >
-                          {user.user_id}
-                        </option>
-                      );
-                  })}
-                </select>
-                {usersChoose[index] !== "" && (
-                  <select
-                    style={{ width: "50%", color: "black" }}
-                    value={itemsChoose[index]}
-                    onChange={(event) => {
-                      handleChangeItemChoose(event, index);
-                    }}
-                  >
-                    <option selected defaultValue={""}>
-                      Choose items
-                    </option>
-                    {users
-                      .filter((user) => user.user_id === usersChoose[index])
-                      .map((user) => {
-                        return user.items.map((item) => (
-                          <option
-                            style={{ color: "black" }}
-                            value={item.item_id}
-                          >
-                            {item.name}
-                          </option>
-                        ));
-                      })}
-                  </select>
-                )}
-
-                {index === usersChoose.length - 1 && (
-                  <button onClick={addUser}>Add more user</button>
-                )}
-              </>
-            );
-          })}
-        </div>
-        <div style={styles.formrow}>
-          <label>Your Item</label>
-          <select
-            name=""
-            id=""
-            style={{ width: "100%", color: "black" }}
-            value={itemId}
-            onChange={handleUserItemChoose}
-          >
-            <option selected defaultValue={""} disabled>
-              Choose your item
-            </option>
-            {users.map((user) => {
-              if (user.user_id === account) {
-                return user.items.map((item) => (
-                  <option
-                    style={{ color: "black" }}
-                    key={item.item_id}
-                    value={item.item_id}
-                  >
-                    {item.name}
-                  </option>
-                ));
-              }
-            })}
-          </select>
-        </div>
-
         <form style={styles.contentdiv}>
+          <div style={styles.formrow}>
+            <label>User invited</label>
+            {usersChoose.map((userChoose, index) => {
+              return (
+                <>
+                  <div style={{ marginBottom: "0.5rem" }}>
+                    <select
+                      style={styles.textbox}
+                      value={userChoose}
+                      onChange={(event) => handleChangeUserChoose(event, index)}
+                    >
+                      <option selected defaultValue="">
+                        Choose users
+                      </option>
+                      {users.map((user) => {
+                        if (user.user_id !== account)
+                          return (
+                            <option
+                              style={{ color: "black" }}
+                              key={user.user_id}
+                              value={user.user_id}
+                            >
+                              {user.user_id}
+                            </option>
+                          );
+                      })}
+                    </select>
+                  </div>
+                  {usersChoose[index] !== "" && (
+                    <div style={{ marginBottom: "1rem" }}>
+                      <select
+                        style={styles.textbox}
+                        value={itemsChoose[index]}
+                        onChange={(event) => {
+                          handleChangeItemChoose(event, index);
+                        }}
+                      >
+                        <option selected defaultValue={""}>
+                          Choose items
+                        </option>
+                        {users
+                          .filter((user) => user.user_id === usersChoose[index])
+                          .map((user) => {
+                            return user.items.map((item) => (
+                              <option
+                                style={{ color: "black" }}
+                                value={item.item_id}
+                              >
+                                {item.name}
+                              </option>
+                            ));
+                          })}
+                      </select>
+                    </div>
+                  )}
+
+                  {index === usersChoose.length - 1 && (
+                    <button onClick={addUser}>Add more user</button>
+                  )}
+                </>
+              );
+            })}
+          </div>
+          <div style={styles.formrow}>
+            <label>Your Item</label>
+            <select
+              name=""
+              id=""
+              style={styles.textbox}
+              value={itemId}
+              onChange={handleUserItemChoose}
+            >
+              <option selected defaultValue={""} disabled>
+                Choose your item
+              </option>
+              {users.map((user) => {
+                if (user.user_id === account) {
+                  return user.items.map((item) => (
+                    <option
+                      style={{ color: "black" }}
+                      key={item.item_id}
+                      value={item.item_id}
+                    >
+                      {item.name}
+                    </option>
+                  ));
+                }
+              })}
+            </select>
+          </div>
           <div style={styles.formrow}>
             <label>Closed at</label>
             <input
-              style={{ color: "black" }}
+              style={styles.textbox}
               type="datetime-local"
               value={timeClose}
               onChange={handleChange(setTimeClose)}

@@ -2,7 +2,7 @@ import Content from "./Content";
 
 export default function Home() {
   return (
-    <main>
+    <main style={{ marginBottom: "10rem" }}>
       <Content />
     </main>
   );

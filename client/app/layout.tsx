@@ -4,8 +4,8 @@ import "./globals.css";
 import Header from "./Header";
 
 export const metadata = {
-  title: "Auction Smart Contract",
-  description: "Auction Smart Contract",
+  title: "ASC",
+  description: "ASC",
 };
 
 export default function RootLayout({

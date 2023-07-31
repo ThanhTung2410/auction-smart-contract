@@ -162,28 +162,31 @@ export default function ItemList(props: ItemListProps) {
                 <img src={item.media} alt="..." />
               </Link>
             </ImageCard>
-            <div className="card-body p-2 mt-3">
+            <div className="card-body p-2 mt-3" style={{ textAlign: "center" }}>
               <CardHeading>{item.name}</CardHeading>
               <Text className="ps-2  pb-3 text-secondary">
                 {item.description}
               </Text>
             </div>
-            <button
-              onClick={() => {
-                startDeleteItem(item.item_id);
-              }}
-              className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-            >
-              Delete
-            </button>
-            <button
-              className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-              onClick={() => {
-                router.push("/items/edit?id=" + item.item_id);
-              }}
-            >
-              Edit
-            </button>
+            <div>
+              <button
+                onClick={() => {
+                  startDeleteItem(item.item_id);
+                }}
+                className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                style={{ marginRight: "0.5rem" }}
+              >
+                Delete
+              </button>
+              <button
+                className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+                onClick={() => {
+                  router.push("/items/edit?id=" + item.item_id);
+                }}
+              >
+                Edit
+              </button>
+            </div>
           </Card>
         ))}
       </Cards>

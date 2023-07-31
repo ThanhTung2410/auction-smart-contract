@@ -163,11 +163,15 @@ export default function AuctionList(props: AuctionListProps) {
                 <img src={auction?.item_metadata?.media} alt="..." />
               </a>
             </ImageCard>
-            <div className="card-body p-2 mt-3">
+            <div className="card-body p-2 mt-3" style={{ textAlign: "center" }}>
               <CardHeading>{auction.item_metadata.name}</CardHeading>
               <Text className="ps-2  pb-3 text-secondary">
-                {auction.item_metadata.description} Host: {auction.host_id}
+                {auction.item_metadata.description}
               </Text>
+              <div style={{ textAlign: "center", color: "purple" }}>
+                Host
+                <Text className="ps-2  pb-3 font-bold">{auction.host_id}</Text>
+              </div>
             </div>
 
             {auction.is_finish ? (
@@ -177,31 +181,33 @@ export default function AuctionList(props: AuctionListProps) {
             )}
 
             {account !== auction.host_id && !auction.is_finish && (
-              <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                Bid
-              </button>
+              <div style={{ marginTop: "1rem" }}>
+                <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                  Bid
+                </button>
+              </div>
             )}
 
             {account === auction.host_id && !auction.is_finish && (
-              <button
-                // onClick={() => {
-                //   startDeleteAuction(auction.auction_id);
-                // }}
-                className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-              >
-                Delete
-              </button>
-            )}
-
-            {account === auction.host_id && !auction.is_finish && (
-              <button
-                // onClick={() => {
-                //   startDeleteAuction(auction.auction_id);
-                // }}
-                className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-              >
-                Edit
-              </button>
+              <div style={{ marginTop: "1rem" }}>
+                <button
+                  // onClick={() => {
+                  //   startDeleteAuction(auction.auction_id);
+                  // }}
+                  className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                  style={{ marginRight: "0.5rem" }}
+                >
+                  Delete
+                </button>
+                <button
+                  // onClick={() => {
+                  //   startDeleteAuction(auction.auction_id);
+                  // }}
+                  className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+                >
+                  Edit
+                </button>
+              </div>
             )}
           </Card>
         ))}

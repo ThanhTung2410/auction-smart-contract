@@ -178,25 +178,34 @@ export default function JointAuctionList(props: JointAuctionListProps) {
         {jointAuctions.map((jointAuction) => (
           <Card key={jointAuction.joint_auction_id}>
             {jointAuction.items.map((item) => (
-              <ImageCard>
-                <a
-                  href={"/joint-auction/detail?id=" + jointAuction.joint_auction_id}
+              <>
+                <ImageCard>
+                  <a
+                    href={
+                      "/joint-auction/detail?id=" +
+                      jointAuction.joint_auction_id
+                    }
+                  >
+                    <img src={item?.media} alt="..." />
+                  </a>
+                </ImageCard>
+                <div
+                  className="card-body p-2 mt-3"
+                  style={{ textAlign: "center" }}
                 >
-                  <img src={item?.media} alt="..." />
-                </a>
-              </ImageCard>
+                  <CardHeading>{item.name}</CardHeading>
+                  <Text className="ps-2  pb-3 text-secondary">
+                    {item.description}
+                  </Text>
+                </div>
+              </>
             ))}
-            {jointAuction.items.map((item) => (
-              <div className="card-body p-2 mt-3">
-                <CardHeading>{item.name}</CardHeading>
-                <Text className="ps-2  pb-3 text-secondary">
-                  {item.description}
-                </Text>
-              </div>
-            ))}
-            <Text className="ps-2  pb-3 text-black">
-              Host: {jointAuction.set_host_id.join(", ")}
-            </Text>
+            <div style={{ textAlign: "center", color: "purple" }}>
+              Host
+              <Text className="ps-2  pb-3 font-bold">
+                {jointAuction.set_host_id.join(", ")}
+              </Text>
+            </div>
 
             {jointAuction.is_finish ? (
               <b style={{ color: "black" }}>The auction has finished</b>

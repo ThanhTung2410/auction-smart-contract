@@ -184,41 +184,37 @@ const Form = () => {
     <>
       <div style={styles.formwrap}>
         <div style={styles.pagename}>Add auction</div>
-        <div style={styles.formrow}>
-          <label>Item</label>
-          <select
-            name=""
-            id=""
-            style={{ width: "100%", color: "black" }}
-            value={itemId}
-            onChange={handleChange(setItemId)}
-          >
-            <option selected defaultValue={""} disabled>
-              Choose your item
-            </option>
-            {userItems.map((item) => {
-              if (!item.is_auction)
-                return (
-                  <option
-                    style={{ color: "black" }}
-                    key={item.item_id}
-                    value={item.item_id}
-                  >
-                    {item.name}
-                  </option>
-                );
-            })}
-          </select>
-        </div>
 
         <form style={styles.contentdiv} onSubmit={changeMessage}>
           <div style={styles.formrow}>
+            <label>Item</label>
+            <select
+              name=""
+              id=""
+              style={styles.textbox}
+              value={itemId}
+              onChange={handleChange(setItemId)}
+            >
+              <option selected defaultValue={""} disabled>
+                Choose your item
+              </option>
+              {userItems.map((item) => {
+                if (!item.is_auction)
+                  return (
+                    <option key={item.item_id} value={item.item_id}>
+                      {item.name}
+                    </option>
+                  );
+              })}
+            </select>
+          </div>
+          <div style={styles.formrow}>
             <label>Closed at</label>
             <input
-              style={{ color: "black" }}
               type="datetime-local"
               value={timeClose}
               onChange={handleChange(setTimeClose)}
+              style={styles.textbox}
             />
           </div>
           <div style={styles.formrow}>

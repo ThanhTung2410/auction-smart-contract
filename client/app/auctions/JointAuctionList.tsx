@@ -180,7 +180,7 @@ export default function JointAuctionList(props: JointAuctionListProps) {
             {jointAuction.items.map((item) => (
               <ImageCard>
                 <a
-                  href={"/auctions/detail?id=" + jointAuction.joint_auction_id}
+                  href={"/joint-auction/detail?id=" + jointAuction.joint_auction_id}
                 >
                   <img src={item?.media} alt="..." />
                 </a>

@@ -303,8 +303,6 @@ export default function page() {
           ),
         };
 
-        console.log(newResult);
-
         setJointAuction(newResult);
         setCurrentUserTransaction(transactionFound);
         setTransactionOfAuction(allTransactions);
@@ -371,16 +369,17 @@ export default function page() {
             />
           </CloseNFT>
           <TopImageContainer>
-            <HeaderText>
-              {jointAuction?.items.map((item) => item.name).join(" - ")}
-            </HeaderText>
             {jointAuction?.items.map((item) => (
-              <img
-                src={item.media}
-                width="100%"
-                height="100%"
-                className="rounded-3"
-              />
+              <>
+                <HeaderText>{item.name}</HeaderText>
+                <img
+                  src={item.media}
+                  width="100%"
+                  height="100%"
+                  className="rounded-3"
+                  style={{ marginBottom: "0.5rem" }}
+                />
+              </>
             ))}
 
             <div
@@ -400,7 +399,7 @@ export default function page() {
                 Host by
               </p>
               <span style={{ fontSize: "0.9rem", fontWeight: 600 }}>
-                {jointAuction?.set_host_id.join(" - ")}
+                {jointAuction?.set_host_id.join(" & ")}
               </span>
             </div>
           </TopImageContainer>
@@ -408,7 +407,7 @@ export default function page() {
             <PriceBucket>
               <div>
                 <p style={{ color: "#b2b7c2", marginBottom: 0 }}>CURRENT BID</p>
-                <PriceArea>{jointAuction?.highest_bid} (NEAR)</PriceArea>
+                <PriceArea>{jointAuction?.highest_bid} NEAR</PriceArea>
               </div>
               <div>
                 <PriceArea>
@@ -423,9 +422,12 @@ export default function page() {
                       Your previous bid:{" "}
                       {currentUserTransaction
                         ? currentUserTransaction.total_bid
-                        : 0}
+                        : 0}{" "}
+                      NEAR
                     </p>
                   )}
+                </PriceArea>
+                <PriceArea>
                   {!jointAuction?.set_host_id.includes(account) &&
                     !jointAuction?.is_finish && (
                       <form onSubmit={bidJointAuction}>
@@ -444,14 +446,13 @@ export default function page() {
             <Description>
               <h6>Description</h6>
               <span>
-                {jointAuction?.items
-                  .map((item) => item.description)
-                  .join(" - ")}
+                {jointAuction?.items.map((item) => (
+                  <div>- {item.description}</div>
+                ))}
               </span>
             </Description>
             <Description>
               <h6>Attributes</h6>
-
               {/* later */}
               <AttributeContainer>
                 <Attribute>
@@ -513,9 +514,10 @@ export default function page() {
                 <a>
                   <RowBody>
                     <span>Account ID</span>
-                    <p>{transaction.owner_id}</p>
+                    <p>{transaction.owner_id.substring(0, 5)}...</p>
                     <span>Bid</span>
-                    <p>{transaction.total_bid}</p>
+                    <p>{transaction.total_bid} NEAR</p>
+                    <span>Time</span>
                     <p>{new Date(transaction.updated_at).toLocaleString()}</p>
                   </RowBody>
                 </a>

@@ -89,8 +89,8 @@ const PriceArea = styled.div`
 const PriceBucket = styled.div`
   display: flex;
   flex-direction: row;
-  align-items: flex-end;
   justify-content: space-between;
+  align-items: flex-end;
   margin-top: 30px;
   width: 100%;
 `;
@@ -397,8 +397,13 @@ export default function page() {
           <RightSection>
             <PriceBucket>
               <div>
-                <p style={{ color: "#b2b7c2", marginBottom: 0 }}>CURRENT BID</p>
-                <PriceArea>{auction?.highest_bid} (NEAR)</PriceArea>
+                <p style={{ color: "#b2b7c2", marginBottom: 0 }}>Current bid</p>
+                <PriceArea>
+                  {auction?.highest_bid
+                    ? auction?.highest_bid
+                    : auction?.floor_price}{" "}
+                  (NEAR)
+                </PriceArea>
               </div>
               <div>
                 <PriceArea>
@@ -410,9 +415,12 @@ export default function page() {
                       Your previous bid:{" "}
                       {currentUserTransaction
                         ? currentUserTransaction.total_bid
-                        : 0}
+                        : 0}{" "}
+                      NEAR
                     </p>
                   )}
+                </PriceArea>
+                <PriceArea>
                   {auction?.host_id !== account && !auction?.is_finish && (
                     <form onSubmit={joinAuction}>
                       <label>Enter the amount you want to bid</label> (NEAR)
@@ -420,8 +428,11 @@ export default function page() {
                         type="number"
                         value={bid}
                         onChange={handleChange}
+                        style={{ marginRight: "0.5rem", color: "black" }}
                       />
-                      <button>Bid</button>
+                      <button className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">
+                        Bid
+                      </button>
                     </form>
                   )}
                 </PriceArea>
@@ -495,9 +506,10 @@ export default function page() {
                 <a>
                   <RowBody>
                     <span>Account ID</span>
-                    <p>{transaction.owner_id}</p>
+                    <p>{transaction.owner_id.substring(0, 5)}</p>
                     <span>Bid</span>
                     <p>{transaction.total_bid}</p>
+                    <span>Time</span>
                     <p>{new Date(transaction.updated_at).toLocaleString()}</p>
                   </RowBody>
                 </a>

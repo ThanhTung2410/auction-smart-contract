@@ -114,7 +114,7 @@ impl ImplJointAuction for AuctionContract {
         }
     }
 
-    fn get_all_joint_auctions_open(&self) -> Vec<JointAuctionMetadata> {
+    fn get_all_joint_auctions(&self) -> Vec<JointAuctionMetadata> {
         let mut result = Vec::new();
         if self.all_joint_auctions.is_empty() {
             return result;
@@ -124,9 +124,7 @@ impl ImplJointAuction for AuctionContract {
                 .joint_auction_metadata_by_id
                 .get(&joint_auction_id)
                 .unwrap();
-            if joint_auction.is_open {
-                result.push(joint_auction);
-            }
+            result.push(joint_auction);
         }
         result
     }

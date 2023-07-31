@@ -147,14 +147,6 @@ export default function AuctionList(props: AuctionListProps) {
             Add auction
           </button>
         </Link>
-        <Link href="/joint-auction/add">
-          <button
-            className="bg-gray-500 hover:bg-gray-700 font-bold py-2 px-4 rounded text-white"
-            style={{ margin: "0 auto", display: "inline-block" }}
-          >
-            Add joint auction
-          </button>
-        </Link>
       </div>
       {auctions.length === 0 && (
         <div style={{ textAlign: "center" }}>

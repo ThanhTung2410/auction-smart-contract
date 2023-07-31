@@ -66,7 +66,7 @@ pub trait ImplJointAuction {
 
     fn accept_invitation(&mut self, joint_auction_id: JointAuctionId);
 
-    fn get_all_joint_auctions_open(&self) -> Vec<JointAuctionMetadata>; // just for auctions that is open
+    fn get_all_joint_auctions(&self) -> Vec<JointAuctionMetadata>;
 
     /// Get joint auction metadata by auction id
     fn get_joint_auction_metadata_by_joint_auction_id(

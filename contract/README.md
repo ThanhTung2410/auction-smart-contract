@@ -189,10 +189,10 @@ cargo make view check_collaboration_of_auction '{"joint_auction_id": "1"}'
 cargo make call accept_invitation '{"joint_auction_id": "1"}' --account-id test_auction_contract.testnet
 ```
 
-## get_all_joint_auctions_open
+## get_all_joint_auctions
 
 ```
-cargo make view get_all_joint_auctions_open
+cargo make view get_all_joint_auctions
 ```
 
 ## get_all_transaction_by_auction_id

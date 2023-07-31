@@ -40,6 +40,11 @@ cargo make call get_user_metadata_by_user_id '{"user_id": "thanhtung2410.testnet
 cargo make call update_user_information '{"name": "Tran Phuoc Sang", "avatar": "None", "email": "transhack09@gmail.com", "phone": "0123456789", "description":"None"}' --account-id calocnuong.testnet
 ```
 
+## get_all_users
+```
+cargo make view get_all_users
+```
+
 # Item
 
 ## create_item

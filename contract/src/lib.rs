@@ -71,6 +71,7 @@ impl AuctionContract {
             all_joint_auctions: UnorderedSet::new(
                 ContractStorageKey::AllJointAuctions.try_to_vec().unwrap(),
             ),
+            all_users: UnorderedSet::new(ContractStorageKey::AllUsers.try_to_vec().unwrap()),
         }
     }
 }

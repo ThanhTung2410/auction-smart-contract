@@ -13,7 +13,7 @@ use super::{
     bid_transaction::BidTransaction,
     item::{ItemId, ItemMetadata},
     joint_auction::{JointAuctionId, JointAuctionMetadata},
-    user::{JsonUser, UserId},
+    user::{UserId, UserMetadata},
 };
 
 /// The `AuctionContractMetadata` struct represents metadata for an auction contract.
@@ -53,7 +53,7 @@ pub struct AuctionContract {
     pub metadata_contract: LazyOption<AuctionContractMetadata>,
 
     /// Map of `JsonUser` metadata by user ID.
-    pub user_metadata_by_id: LookupMap<UserId, JsonUser>,
+    pub user_metadata_by_id: LookupMap<UserId, UserMetadata>,
 
     /// Map of auction host by user ID.
     pub auctions_host_per_user: LookupMap<UserId, UnorderedSet<AuctionId>>,
@@ -79,6 +79,8 @@ pub struct AuctionContract {
     pub joint_auction_metadata_by_id: LookupMap<JointAuctionId, JointAuctionMetadata>,
 
     pub all_joint_auctions: UnorderedSet<JointAuctionId>,
+
+    pub all_users: UnorderedSet<UserId>,
 }
 
 /// The `ContractStorageKey` enum represents keys for different persistent collections in the contract storage.
@@ -95,4 +97,5 @@ pub enum ContractStorageKey {
     AllAuctions,
     JointAuctionMetadataById,
     AllJointAuctions,
+    AllUsers,
 }

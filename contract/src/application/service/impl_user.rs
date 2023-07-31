@@ -27,17 +27,11 @@ impl ImplUser for AuctionContract {
             phone,
             description,
         };
-        let json_user = JsonUser {
-            user_id: owner_id.clone(),
-            metadata: user,
-            items: Vec::new(),
-            auctions_host: Vec::new(),
-            auctions_join: Vec::new(),
-        };
-        self.user_metadata_by_id.insert(&owner_id, &json_user);
+        self.user_metadata_by_id.insert(&owner_id, &user);
+        self.all_users.insert(&owner_id);
     }
 
-    fn get_user_metadata_by_user_id(&self, user_id: &UserId) -> Option<JsonUser> {
+    fn get_user_metadata_by_user_id(&self, user_id: &UserId) -> Option<UserMetadata> {
         self.user_metadata_by_id.get(user_id)
     }
 
@@ -48,20 +42,28 @@ impl ImplUser for AuctionContract {
         email: Option<String>,
         phone: Option<String>,
         description: Option<String>,
-    ) -> crate::models::user::JsonUser {
+    ) -> UserMetadata {
         let owner_id = env::signer_account_id();
 
         let mut user_account = self
             .get_user_metadata_by_user_id(&owner_id)
             .expect("Account does not exists");
 
-        user_account.metadata.name = name;
-        user_account.metadata.avatar = avatar;
-        user_account.metadata.email = email;
-        user_account.metadata.phone = phone;
-        user_account.metadata.description = description;
+        user_account.name = name;
+        user_account.avatar = avatar;
+        user_account.email = email;
+        user_account.phone = phone;
+        user_account.description = description;
 
         self.user_metadata_by_id.insert(&owner_id, &user_account);
         user_account
+    }
+
+    fn get_all_users(&self) -> Vec<UserMetadata> {
+        let mut result = Vec::new();
+        for user_id in self.all_users.iter() {
+            result.push(self.get_user_metadata_by_user_id(&user_id).unwrap());
+        }
+        result
     }
 }

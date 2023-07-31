@@ -23,6 +23,7 @@ pub struct UserMetadata {
     pub description: Option<String>,
 }
 
+// is necessary?
 #[derive(BorshDeserialize, BorshSerialize, Deserialize, Serialize)]
 #[serde(crate = "near_sdk::serde")]
 pub struct JsonUser {
@@ -64,7 +65,7 @@ pub trait ImplUser {
     );
 
     /// Returns a `JsonUser` representation of the user's metadata for the given user ID.
-    fn get_user_metadata_by_user_id(&self, user_id: &UserId) -> Option<JsonUser>;
+    fn get_user_metadata_by_user_id(&self, user_id: &UserId) -> Option<UserMetadata>;
 
     /// Update user information
     fn update_user_information(
@@ -74,5 +75,7 @@ pub trait ImplUser {
         email: Option<String>,
         phone: Option<String>,
         description: Option<String>,
-    ) -> JsonUser;
+    ) -> UserMetadata;
+
+    fn get_all_users(&self) -> Vec<UserMetadata>;
 }

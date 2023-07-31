@@ -126,6 +126,11 @@ const Form = () => {
   const [users, setUsers] = useState<User[]>([
     {
       user_id: "",
+      avatar: null,
+      description: null,
+      email: null,
+      name: null,
+      phone: null,
       items: [],
     },
   ]);

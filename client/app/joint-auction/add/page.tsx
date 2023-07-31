@@ -1,6 +1,7 @@
 "use client";
 
 import { Item } from "@/app/@types/Item.type";
+import { User } from "@/app/@types/User.type";
 import { useAppSelector } from "@/context/store";
 import {
   selectAccountId,
@@ -122,22 +123,46 @@ const Form = () => {
 
   const [userItems, setUserItems] = useState<Item[]>([]);
 
+  const [users, setUsers] = useState<User[]>([
+    {
+      user_id: "",
+      items: [],
+    },
+  ]);
+
+  const [usersChoose, setUsersChoose] = useState<string[]>([""]);
+  const [itemsChoose, setItemsChoose] = useState<string[]>([""]);
+
   useEffect(() => {
     const getData = async () => {
       if (wallet) {
-        const result = await wallet.viewMethod({
+        const usersGet = await wallet.viewMethod({
           contractId: CONTRACT_ID,
-          method: "get_all_items_per_user_own",
-          args: {
-            user_id: account,
-          },
+          method: "get_all_users",
         });
+
+        const usersWithItems = await Promise.all(
+          usersGet.map(async (user: User) => {
+            const items = await wallet.viewMethod({
+              contractId: CONTRACT_ID,
+              method: "get_all_items_per_user_own",
+              args: {
+                user_id: user.user_id,
+              },
+            });
+
+            return {
+              ...user,
+              items,
+            };
+          })
+        );
 
         // get auction_host_per_user to remove item from select because that item
         // are used for auction
 
-        setUserItems(result);
-        console.log(result);
+        setUsers(usersWithItems);
+        console.log(users);
       }
     };
     getData();
@@ -149,7 +174,7 @@ const Form = () => {
     }
   }, [isLoading, wallet]);
 
-  const changeMessage = async (e: any) => {
+  const createJointAuction = async (e: any) => {
     if (!wallet) {
       console.error("Wallet is not initialized");
       return;
@@ -160,9 +185,10 @@ const Form = () => {
     await wallet
       .callMethod({
         contractId: CONTRACT_ID,
-        method: "create_auction",
+        method: "create_joint_auction",
         args: {
-          item_id: itemId,
+          users_invited: usersChoose,
+          set_item_id: itemsChoose,
           closed_at: unixTimestamp,
           floor_price: parseFloat(floorPrice),
         },
@@ -178,27 +204,114 @@ const Form = () => {
       setUnixTimeStamp(Date.parse(value));
     }
     setState(value);
+    console.log(value);
+  };
+
+  const handleChangeUserChoose = (event: any, index: any) => {
+    const list = [...usersChoose];
+    list[index] = event.target.value;
+    setUsersChoose(list);
+    console.log(usersChoose);
+  };
+
+  const handleChangeItemChoose = (event: any, index: any) => {
+    const list = [...itemsChoose];
+    list[index] = event.target.value;
+    setItemsChoose(list);
+    console.log(itemsChoose);
+  };
+
+  const handleUserItemChoose = (event: any) => {
+    const list = [...itemsChoose];
+    list.push(event.target.value);
+    setItemsChoose(list);
+  };
+
+  const addUser = () => {
+    setUsersChoose((prev) => [...prev, ""]);
   };
 
   return (
     <>
       <div style={styles.formwrap}>
-        <div style={styles.pagename}>Add auction</div>
+        <div style={styles.pagename}>Add Joint auction</div>
         <div style={styles.formrow}>
-          <label>Item</label>
+          <label>User invited</label>
+
+          {/* {usersChoose.length && <button>Add more user</button>} */}
+
+          {usersChoose.map((userChoose, index) => {
+            return (
+              <>
+                <select
+                  style={{ width: "100%", color: "black" }}
+                  value={userChoose}
+                  onChange={(event) => handleChangeUserChoose(event, index)}
+                >
+                  <option selected defaultValue="">
+                    Choose users
+                  </option>
+                  {users.map((user) => {
+                    if (user.user_id !== account)
+                      return (
+                        <option
+                          style={{ color: "black" }}
+                          key={user.user_id}
+                          value={user.user_id}
+                        >
+                          {user.user_id}
+                        </option>
+                      );
+                  })}
+                </select>
+                {usersChoose[index] !== "" && (
+                  <select
+                    style={{ width: "50%", color: "black" }}
+                    value={itemsChoose[index]}
+                    onChange={(event) => {
+                      handleChangeItemChoose(event, index);
+                    }}
+                  >
+                    <option selected defaultValue={""}>
+                      Choose items
+                    </option>
+                    {users
+                      .filter((user) => user.user_id === usersChoose[index])
+                      .map((user) => {
+                        return user.items.map((item) => (
+                          <option
+                            style={{ color: "black" }}
+                            value={item.item_id}
+                          >
+                            {item.name}
+                          </option>
+                        ));
+                      })}
+                  </select>
+                )}
+
+                {index === usersChoose.length - 1 && (
+                  <button onClick={addUser}>Add more user</button>
+                )}
+              </>
+            );
+          })}
+        </div>
+        <div style={styles.formrow}>
+          <label>Your Item</label>
           <select
             name=""
             id=""
             style={{ width: "100%", color: "black" }}
             value={itemId}
-            onChange={handleChange(setItemId)}
+            onChange={handleUserItemChoose}
           >
             <option selected defaultValue={""} disabled>
               Choose your item
             </option>
-            {userItems.map((item) => {
-              if (!item.is_auction)
-                return (
+            {users.map((user) => {
+              if (user.user_id === account) {
+                return user.items.map((item) => (
                   <option
                     style={{ color: "black" }}
                     key={item.item_id}
@@ -206,12 +319,13 @@ const Form = () => {
                   >
                     {item.name}
                   </option>
-                );
+                ));
+              }
             })}
           </select>
         </div>
 
-        <form style={styles.contentdiv} onSubmit={changeMessage}>
+        <form style={styles.contentdiv}>
           <div style={styles.formrow}>
             <label>Closed at</label>
             <input
@@ -232,7 +346,12 @@ const Form = () => {
           </div>
 
           <div style={styles.btnrow}>
-            <input style={styles.btn} type="submit" value="Submit" />
+            <input
+              style={styles.btn}
+              type="submit"
+              value="Submit"
+              onClick={createJointAuction}
+            />
           </div>
         </form>
       </div>

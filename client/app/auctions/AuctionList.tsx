@@ -134,13 +134,25 @@ export default function AuctionList(props: AuctionListProps) {
   return (
     <>
       <Title name="List Auctions" />
-      <div>
+      <div style={{ display: "flex", justifyContent: "center" }}>
         <Link href="/auctions/add">
           <button
             className="bg-blue-500 hover:bg-blue-700 font-bold py-2 px-4 rounded text-white"
-            style={{ margin: "0 auto", display: "block" }}
+            style={{
+              margin: "0 auto",
+              display: "inline-block",
+              marginRight: "0.5rem",
+            }}
           >
             Add auction
+          </button>
+        </Link>
+        <Link href="/joint-auction/add">
+          <button
+            className="bg-gray-500 hover:bg-gray-700 font-bold py-2 px-4 rounded text-white"
+            style={{ margin: "0 auto", display: "inline-block" }}
+          >
+            Add joint auction
           </button>
         </Link>
       </div>

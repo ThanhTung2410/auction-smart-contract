@@ -64,6 +64,7 @@ const Content = () => {
   const account = useAppSelector(selectAccountId);
   const [walletReady, setWalletReady] = useState(false);
   const [data, setData] = useState<User[]>([]);
+  const [user, setUser] = useState<User | null>(null);
   const isLoading = useAppSelector(selectIsLoading);
 
   useEffect(() => {
@@ -79,6 +80,7 @@ const Content = () => {
           contractId: CONTRACT_ID,
           method: "get_all_users",
         });
+        setUser(data.filter((user) => user.user_id === account)[0])
         setData(result);
         console.log(result);
       }
@@ -108,7 +110,7 @@ const Content = () => {
                 <input
                   style={styles.textbox}
                   value={
-                    data.filter((user) => user.user_id === account)[0].name
+                    user?.name !== null ? user?.name : ""
                   }
                   disabled
                 />

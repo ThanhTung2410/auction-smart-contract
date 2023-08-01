@@ -116,7 +116,7 @@ const Form = () => {
 
   // Form input
   const [unixTimestamp, setUnixTimeStamp] = useState<number>(0);
-  const [timeClose, setTimeClose] = useState<Date>(new Date());
+  const [timeClose, setTimeClose] = useState<string>("");
   const [floorPrice, setFloorPrice] = useState<number>(0);
   const [itemId, setItemId] = useState<string>();
 

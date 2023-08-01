@@ -117,7 +117,7 @@ const Form = () => {
 
   // Form input
   const [unixTimestamp, setUnixTimeStamp] = useState<number>(0);
-  const [timeClose, setTimeClose] = useState<Date>(new Date());
+  const [timeClose, setTimeClose] = useState<string>("");
   const [floorPrice, setFloorPrice] = useState<number>(0);
   const [itemId, setItemId] = useState<string>();
 
@@ -207,6 +207,7 @@ const Form = () => {
     let { value, type } = event.target;
     if (type === "datetime-local") {
       setUnixTimeStamp(Date.parse(value));
+      setTimeClose(value)
     }
     setState(value);
     console.log(value)

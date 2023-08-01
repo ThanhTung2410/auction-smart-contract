@@ -80,7 +80,7 @@ const Content = () => {
           contractId: CONTRACT_ID,
           method: "get_all_users",
         });
-        setUser(data.filter((user) => user.user_id === account)[0])
+        setUser(result.filter((user: User) => user.user_id === account)[0])
         setData(result);
         console.log(result);
       }

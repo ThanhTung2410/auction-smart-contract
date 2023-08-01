@@ -216,43 +216,47 @@ export default function JointAuctionList(props: JointAuctionListProps) {
             {account !== undefined && !jointAuction.set_host_id.includes(account) &&
               !jointAuction.is_finish &&
               jointAuction.is_open && (
-                <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                  Bid
-                </button>
-              )}
-            {account !== undefined && jointAuction.set_host_id.includes(account) &&
-              !jointAuction.is_finish && (
-                <button
-                  // onClick={() => {
-                  //   startDeleteAuction(auction.auction_id);
-                  // }}
-                  className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-                >
-                  Delete
-                </button>
-              )}
-            {account !== undefined && jointAuction.set_host_id.includes(account) &&
-              !jointAuction.is_finish && (
-                <button
-                  // onClick={() => {
-                  //   startDeleteAuction(auction.auction_id);
-                  // }}
-                  className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-                >
-                  Edit
-                </button>
-              )}
+                <div style={{ marginTop: "1rem" }}>
+                  <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                    Bid
+                  </button>
 
+                </div>
+              )}
             {account !== undefined && jointAuction.set_host_id.includes(account) &&
-              jointAuction.pool.map.get(account) != undefined &&
-              !jointAuction.pool.map.get(account) && (
-                <button
-                  value={jointAuction.joint_auction_id}
-                  style={{ color: "black" }}
-                  onClick={acceptInvitation}
-                >
-                  Accept Invitation
-                </button>
+              !jointAuction.is_finish && (
+                <div style={{ marginTop: "1rem" }}>
+                  <button
+                    // onClick={() => {
+                    //   startDeleteAuction(auction.auction_id);
+                    // }}
+                    className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                    style={{ marginRight: "0.5rem" }}
+                  >
+                    Delete
+                  </button>
+                  <button
+                    // onClick={() => {
+                    //   startDeleteAuction(auction.auction_id);
+                    // }}
+                    className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+                  >
+                    Edit
+                  </button>
+                </div>
+              )}
+            {account !== undefined && jointAuction.set_host_id.includes(account) &&
+              jointAuction.pool.map[account as keyof typeof jointAuction.pool.map] != undefined &&
+              !jointAuction.pool.map[account as keyof typeof jointAuction.pool.map] && (
+                <div style={{ marginTop: "1rem" }}>
+                  <button
+                    value={jointAuction.joint_auction_id}
+                    onClick={acceptInvitation}
+                    className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
+                  >
+                    Accept Invitation
+                  </button>
+                </div>
               )}
           </Card>
         ))}

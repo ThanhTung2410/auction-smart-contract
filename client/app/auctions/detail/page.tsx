@@ -473,11 +473,11 @@ export default function page() {
               <h6>Details</h6>
               <MintDetails>
                 <span>Created at</span>
-                {new Date(auction?.created_at).toLocaleString()}
+                {auction?.created_at !== undefined && new Date(auction?.created_at).toLocaleString()}
               </MintDetails>
               <MintDetails>
                 <span>Closed at</span>
-                {new Date(auction?.closed_at).toLocaleString()}
+                {auction?.closed_at !== undefined && new Date(auction?.closed_at).toLocaleString()}
               </MintDetails>
               {auction?.closed_at && (
                 <div style={{ marginTop: "0.5rem" }}>

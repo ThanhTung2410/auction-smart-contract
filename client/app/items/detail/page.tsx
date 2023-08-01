@@ -300,11 +300,11 @@ export default function page() {
               <h6>Details</h6>
               <MintDetails>
                 <span>Created at</span>
-                {new Date(item?.created_at).toLocaleString()}
+                {item?.created_at !== undefined && new Date(item?.created_at).toLocaleString()}
               </MintDetails>
               <MintDetails>
                 <span>Updated at</span>
-                {new Date(item?.updated_at).toLocaleString()}
+                {item?.updated_at !== undefined && new Date(item?.updated_at).toLocaleString()}
               </MintDetails>
             </Description>
           </RightSection>

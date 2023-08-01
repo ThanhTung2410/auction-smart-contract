@@ -481,11 +481,11 @@ export default function page() {
               <h6>Details</h6>
               <MintDetails>
                 <span>Created at</span>
-                {new Date(jointAuction?.created_at).toLocaleString()}
+                {jointAuction?.created_at !== undefined && new Date(jointAuction?.created_at).toLocaleString()}
               </MintDetails>
               <MintDetails>
                 <span>Closed at</span>
-                {new Date(jointAuction?.closed_at).toLocaleString()}
+                {jointAuction?.closed_at !== undefined && new Date(jointAuction?.closed_at).toLocaleString()}
               </MintDetails>
               {jointAuction?.closed_at && (
                 <div style={{ marginTop: "0.5rem" }}>

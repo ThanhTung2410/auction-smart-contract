@@ -213,14 +213,14 @@ export default function JointAuctionList(props: JointAuctionListProps) {
               <CountdownTimer timestamp={jointAuction.closed_at} />
             )}
 
-            {!jointAuction.set_host_id.includes(account) &&
+            {account !== undefined && !jointAuction.set_host_id.includes(account) &&
               !jointAuction.is_finish &&
               jointAuction.is_open && (
                 <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                   Bid
                 </button>
               )}
-            {jointAuction.set_host_id.includes(account) &&
+            {account !== undefined && jointAuction.set_host_id.includes(account) &&
               !jointAuction.is_finish && (
                 <button
                   // onClick={() => {
@@ -231,7 +231,7 @@ export default function JointAuctionList(props: JointAuctionListProps) {
                   Delete
                 </button>
               )}
-            {jointAuction.set_host_id.includes(account) &&
+            {account !== undefined && jointAuction.set_host_id.includes(account) &&
               !jointAuction.is_finish && (
                 <button
                   // onClick={() => {
@@ -243,9 +243,9 @@ export default function JointAuctionList(props: JointAuctionListProps) {
                 </button>
               )}
 
-            {jointAuction.set_host_id.includes(account) &&
-              jointAuction.pool.map[account] != undefined &&
-              !jointAuction.pool.map[account] && (
+            {account !== undefined && jointAuction.set_host_id.includes(account) &&
+              jointAuction.pool.map.get(account) != undefined &&
+              !jointAuction.pool.map.get(account) && (
                 <button
                   value={jointAuction.joint_auction_id}
                   style={{ color: "black" }}

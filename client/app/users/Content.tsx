@@ -89,7 +89,7 @@ const Content = () => {
   return (
     <>
       <Title name="Personal Information" />
-      {!data.map((user) => user.user_id).includes(account) && (
+      {account !== undefined && !data.map((user) => user.user_id).includes(account) && (
         <div style={{ textAlign: "center" }}>
           <Link href="/users/add">
             <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
@@ -99,7 +99,7 @@ const Content = () => {
         </div>
       )}
 
-      {data.map((user) => user.user_id).includes(account) && (
+      {account !== undefined && data.map((user) => user.user_id).includes(account) && (
         <>
           <div style={styles.formwrap}>
             <form style={styles.contentdiv}>

@@ -1,6 +1,6 @@
 "use client";
 
-import Countdown from "react-countdown";
+import Countdown, { CountdownRenderProps } from "react-countdown";
 
 import styles from "./countdownTimer.module.scss";
 
@@ -14,7 +14,8 @@ interface CountdownTimerProps {
 
 export default function CountdownTimer(props: CountdownTimerProps) {
   const { timestamp } = props;
-  const renderer = ({ days, hours, minutes, seconds, completed }) => {
+  const renderer = (props: CountdownRenderProps) => {
+    const { days, hours, minutes, seconds, completed } = props
     if (completed) {
       // Render a completed state
       return <Completionist />;

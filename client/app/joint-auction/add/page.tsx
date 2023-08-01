@@ -195,7 +195,7 @@ const Form = () => {
           users_invited: usersChoose,
           set_item_id: itemsChoose,
           closed_at: unixTimestamp,
-          floor_price: parseFloat(floorPrice),
+          floor_price: floorPrice,
         },
         gas: "300000000000000",
       })
@@ -209,7 +209,7 @@ const Form = () => {
       setUnixTimeStamp(Date.parse(value));
     }
     setState(value);
-    console.log(value);
+    console.log(value)
   };
 
   const handleChangeUserChoose = (event: any, index: any) => {

@@ -290,7 +290,7 @@ export default function page() {
         const newResult = {
           ...result,
           items: await Promise.all(
-            result.set_item_id.map(async (item_id) => {
+            result.set_item_id.map(async (item_id: string) => {
               const item = await wallet.viewMethod({
                 contractId: CONTRACT_ID,
                 method: "get_item_metadata_by_item_id",
@@ -411,13 +411,13 @@ export default function page() {
               </div>
               <div>
                 <PriceArea>
-                  {jointAuction?.set_host_id.includes(account) &&
+                  {account !== undefined && jointAuction?.set_host_id.includes(account) &&
                     !jointAuction?.is_finish && (
                       <button onClick={finishJointAuction}>
                         Finish auction
                       </button>
                     )}
-                  {!jointAuction?.set_host_id.includes(account) && (
+                  {account !== undefined && !jointAuction?.set_host_id.includes(account) && (
                     <p>
                       Your previous bid:{" "}
                       {currentUserTransaction
@@ -428,7 +428,7 @@ export default function page() {
                   )}
                 </PriceArea>
                 <PriceArea>
-                  {!jointAuction?.set_host_id.includes(account) &&
+                  {account !== undefined && !jointAuction?.set_host_id.includes(account) &&
                     !jointAuction?.is_finish && (
                       <form onSubmit={bidJointAuction}>
                         <label>Enter the amount you want to bid</label> (NEAR)

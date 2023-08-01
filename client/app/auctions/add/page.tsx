@@ -164,7 +164,7 @@ const Form = () => {
         args: {
           item_id: itemId,
           closed_at: unixTimestamp,
-          floor_price: parseFloat(floorPrice),
+          floor_price: floorPrice,
         },
         gas: "300000000000000",
       })
